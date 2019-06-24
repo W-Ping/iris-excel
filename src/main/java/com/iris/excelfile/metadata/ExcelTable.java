@@ -17,12 +17,12 @@ import java.util.Map;
  * @date Created in 2019/3/5 12:17
  * @see
  */
-public class ExcelTable implements Comparable<ExcelTable> {
+public class ExcelTable<T> implements Comparable<ExcelTable> {
     private int tableNo;
     private String tableName;
     private ExcelHeadProperty excelHeadProperty;
     private boolean needHead;
-    private List<? extends BaseRowModel> data;
+    private List<T> data;
     private ExcelStyle tableStyle;
     private ExcelStyle tableHeadStyle;
     private List<ExcelColumnProperty> columnPropertyList = new ArrayList<>();
@@ -99,19 +99,19 @@ public class ExcelTable implements Comparable<ExcelTable> {
      */
     private int startContentRowIndex = 0;
 
-    public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, List<? extends BaseRowModel> data) {
+    public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, List<T> data) {
         this(tableNo, head, headClass, true, false, data, 0, 0, null, null, null);
     }
 
-    public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, List<? extends BaseRowModel> data, boolean needHead) {
+    public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, List<T> data, boolean needHead) {
         this(tableNo, head, headClass, needHead, false, data, 0, 0, null, null, null);
     }
 
-    public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, List<? extends BaseRowModel> data, int firstRowIndex, int firstCellIndex) {
+    public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, List<T> data, int firstRowIndex, int firstCellIndex) {
         this(tableNo, head, headClass, true, false, data, 0, 0, null, null, null);
     }
 
-    public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, boolean needHead, boolean locked, List<? extends BaseRowModel> data, int firstRowIndex, int firstCellIndex, TableLayoutEnum tableLayoutEnum, IWriteBeforeHandler iWriteBeforeHandler, IWriteAfterHandler iWriteAfterHandler) {
+    public ExcelTable(int tableNo, List<List<String>> head, Class<? extends BaseRowModel> headClass, boolean needHead, boolean locked, List<T> data, int firstRowIndex, int firstCellIndex, TableLayoutEnum tableLayoutEnum, IWriteBeforeHandler iWriteBeforeHandler, IWriteAfterHandler iWriteAfterHandler) {
         this.tableNo = tableNo <= 0 ? 1 : tableNo;
         this.tableName = "excelTable" + this.tableNo;
         this.head = head;
@@ -149,14 +149,6 @@ public class ExcelTable implements Comparable<ExcelTable> {
 
     public void setTableCellRange(ExcelCellRange tableCellRange) {
         this.tableCellRange = tableCellRange;
-    }
-
-    public List<? extends BaseRowModel> getData() {
-        return data;
-    }
-
-    public void setData(List<? extends BaseRowModel> data) {
-        this.data = data;
     }
 
     public ExcelStyle getTableStyle() {
@@ -348,6 +340,14 @@ public class ExcelTable implements Comparable<ExcelTable> {
 
     public void setCellStyleMap(Map<Integer, CellStyle> cellStyleMap) {
         this.cellStyleMap = cellStyleMap;
+    }
+
+    public List<T> getData() {
+        return data;
+    }
+
+    public void setData(List<T> data) {
+        this.data = data;
     }
 
     @Override

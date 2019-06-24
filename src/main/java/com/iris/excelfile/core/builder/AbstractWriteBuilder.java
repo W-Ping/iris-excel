@@ -26,7 +26,7 @@ public abstract class AbstractWriteBuilder implements IWriteBuilder {
     /**
      * 加载数据之前处理
      *
-     * @param table
+     * @param excelSheet
      */
     @Override
     public void initSheetAfter(ExcelSheet excelSheet) {

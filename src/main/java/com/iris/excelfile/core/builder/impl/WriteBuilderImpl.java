@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -66,7 +67,7 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
     }
 
     /**
-     * @param excelSheet
+     * @param excelTable
      */
     @Override
     public void initTable(ExcelTable excelTable) {
@@ -90,7 +91,7 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
      */
     @Override
     public void addContent(ExcelTable table) {
-        List<? extends BaseRowModel> data = table.getData();
+        List<T> data = table.getData();
         int startContentRowIndex = table.getStartContentRowIndex();
         CellStyle currentCellStyle = table.getTableStyle().getCurrentCellStyle();
         for (int i = 0; i < data.size(); i++) {
@@ -99,6 +100,19 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
 //            StyleUtil.buildCellBorderStyle(currentCellStyle, 0, i == 0 && !table.isNeedHead(), BorderEnum.TOP);
         }
     }
+
+
+    /**
+     * @param startRow
+     * @param endRow
+     * @param startCell
+     * @param endCell
+     */
+    @Override
+    public void merge(int startRow, int endRow, int startCell, int endCell) {
+        context.merge(startRow, endRow, startCell, endCell);
+    }
+
 
     /**
      * @param table
@@ -141,36 +155,6 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
     }
 
     /**
-     * @param startRow
-     * @param endRow
-     * @param startCell
-     * @param endCell
-     */
-    @Override
-    public void merge(int startRow, int endRow, int startCell, int endCell) {
-        context.merge(startRow, endRow, startCell, endCell);
-    }
-
-    @Override
-    public void finish() {
-        try {
-            context.getWorkbook().getCreationHelper().createFormulaEvaluator().evaluateAll();
-            context.getWorkbook().write(context.getOutputStream());
-            context.getWorkbook().close();
-        } catch (IOException e) {
-            throw new ExcelParseException("Excel IO error", e);
-        }
-    }
-
-    @Override
-    public void clearCache() {
-//        if (cellStyleMap != null) {
-//            cellStyleMap.clear();
-//        }
-//        mergeRowIndexMap.clear();
-    }
-
-    /**
      * @param oneRowData
      * @param n
      * @param cellStyle
@@ -185,6 +169,7 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
         if (excelTable.getWriteAfterHandler() != null) {
             excelTable.getWriteAfterHandler().row(n, row);
         }
+        //
         if (oneRowData instanceof List) {
             addListTypeToExcel((List) oneRowData, row, cellStyle, excelTable, i);
         } else {
@@ -331,5 +316,24 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
 
     private static String getDicValue(Integer str1, Integer str2, BiFunction<Integer, Integer, String> function) {
         return function.apply(str1, str2);
+    }
+
+    @Override
+    public void clearCache() {
+//        if (cellStyleMap != null) {
+//            cellStyleMap.clear();
+//        }
+//        mergeRowIndexMap.clear();
+    }
+
+    @Override
+    public void finish() {
+        try {
+            context.getWorkbook().getCreationHelper().createFormulaEvaluator().evaluateAll();
+            context.getWorkbook().write(context.getOutputStream());
+            context.getWorkbook().close();
+        } catch (IOException e) {
+            throw new ExcelParseException("Excel IO error", e);
+        }
     }
 }

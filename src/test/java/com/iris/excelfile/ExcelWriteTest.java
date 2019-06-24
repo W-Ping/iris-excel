@@ -24,7 +24,7 @@ import java.util.*;
 
 public class ExcelWriteTest {
     /**
-     * 跨部门月报导出测试
+     *
      */
     @Test
     public void export2007WithTemplate() {

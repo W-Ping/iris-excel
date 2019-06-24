@@ -136,6 +136,8 @@ public class StyleUtil {
                 case RIGHT:
                     cellStyle.setBorderRight(borderTop);
                     break;
+                default:
+                    break;
             }
         }
     }

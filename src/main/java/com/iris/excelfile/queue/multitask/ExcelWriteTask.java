@@ -11,7 +11,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 
 /**
- *
+ * @author liu_wp
+ * @date Created in 2019/6/25 9:13
+ * @see
  */
 @Slf4j
 public class ExcelWriteTask implements Callable<BaseResponse> {
@@ -30,17 +32,16 @@ public class ExcelWriteTask implements Callable<BaseResponse> {
     @Override
     public BaseResponse call() {
         long l = System.currentTimeMillis();
-        log.info("当前执行线程名称：{}，开始时间：{}", Thread.currentThread().getName(), l);
+        log.info("当前执行线程：{}，开始时间：{}", Thread.currentThread().getName(), l);
         try {
             while (!queue.isEmpty()) {
                 iWriteBuilder.addContent(queue.poll());
             }
-            log.info("当前执行线程：{}，耗时：{}毫秒", Thread.currentThread().getName(), (System.currentTimeMillis() - l));
+            log.info("当前执行线程：{}，耗时：{}秒", Thread.currentThread().getName(), (System.currentTimeMillis() - l) / 1000);
             this.countDownLatch.countDown();
             baseResponse.setCode(FileConstant.SUCCESS_CODE);
         } catch (Exception e) {
             e.printStackTrace();
-            this.countDownLatch.notify();
             baseResponse.setCode(FileConstant.FAIL_CODE);
         }
         return baseResponse;

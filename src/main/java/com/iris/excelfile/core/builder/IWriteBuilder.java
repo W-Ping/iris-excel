@@ -1,7 +1,10 @@
 package com.iris.excelfile.core.builder;
 
+import com.iris.excelfile.exception.ExcelException;
 import com.iris.excelfile.metadata.ExcelSheet;
 import com.iris.excelfile.metadata.ExcelTable;
+
+import java.io.IOException;
 
 /**
  * @author liu_wp
@@ -16,7 +19,7 @@ public interface IWriteBuilder {
      *
      * @param excelSheet
      */
-    void addContentToExcel(ExcelSheet excelSheet);
+    void addContentToExcel(ExcelSheet excelSheet) throws ExcelException;
 
     /**
      * 初始化sheet
@@ -30,7 +33,7 @@ public interface IWriteBuilder {
      *
      * @param excelSheet
      */
-    void initSheetAfter(ExcelSheet excelSheet);
+    void initSheetAfter(ExcelSheet excelSheet) throws ExcelException;
 
 
     /**
@@ -73,5 +76,13 @@ public interface IWriteBuilder {
     /**
      * 写出文档
      */
-    void finish();
+    void finish() throws IOException;
+
+
+    /**
+     * 导出文件路径
+     *
+     * @return
+     */
+    String getOutFilePath();
 }

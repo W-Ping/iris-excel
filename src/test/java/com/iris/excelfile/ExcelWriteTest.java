@@ -223,7 +223,7 @@ public class ExcelWriteTest {
         tp2.setNeedHead(false);
         tbList.add(tp2);
         tableNo++;
-        Map<String, List<CrossReportModel>> mockDCCCrossReportData = TestData.mockDCCCrossReportData(1000);
+        Map<String, List<CrossReportModel>> mockDCCCrossReportData = TestData.mockDCCCrossReportData(800);
 //        Map<String, List<CrossReportModel>> mockDCCCrossReportData = new HashMap<>();
         int startRow = 10;
         for (Map.Entry<String, List<CrossReportModel>> map : mockDCCCrossReportData.entrySet()) {

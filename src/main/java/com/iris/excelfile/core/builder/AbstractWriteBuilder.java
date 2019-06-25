@@ -1,5 +1,6 @@
 package com.iris.excelfile.core.builder;
 
+import com.iris.excelfile.exception.ExcelException;
 import com.iris.excelfile.metadata.ExcelSheet;
 import com.iris.excelfile.metadata.ExcelTable;
 import com.iris.excelfile.queue.multitask.ExcelWriteQueueTaskHandler;
@@ -18,7 +19,7 @@ public abstract class AbstractWriteBuilder implements IWriteBuilder {
      * @param excelSheet
      */
     @Override
-    public void addContentToExcel(ExcelSheet excelSheet) {
+    public void addContentToExcel(ExcelSheet excelSheet) throws ExcelException {
         initSheet(excelSheet);
         initSheetAfter(excelSheet);
     }
@@ -29,7 +30,7 @@ public abstract class AbstractWriteBuilder implements IWriteBuilder {
      * @param excelSheet
      */
     @Override
-    public void initSheetAfter(ExcelSheet excelSheet) {
+    public void initSheetAfter(ExcelSheet excelSheet) throws ExcelException {
         List<ExcelTable> excelTables = excelSheet.getExcelTables();
         boolean queueTask = excelSheet.isQueueTask();
         //初始化队列

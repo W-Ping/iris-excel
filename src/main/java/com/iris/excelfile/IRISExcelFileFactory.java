@@ -127,7 +127,7 @@ public class IRISExcelFileFactory {
      */
     private static ExcelWriteResponse exportV2007(ExcelWriteParam param, InputStream inputStream, boolean isQueue) {
         long startTime = System.currentTimeMillis();
-        log.info("======================================导出Excel开始{}", startTime);
+        log.info("开始导出文档{}", startTime);
         ExcelWriteResponse excelWriteResponse = new ExcelWriteResponse();
         OutputStream outputStream = null;
         try {
@@ -136,7 +136,7 @@ public class IRISExcelFileFactory {
                 inputStream = FileUtil.synGetResourcesFileInputStream(param.getExcelTemplateFile());
             }
             outputStream = FileUtil.synGetResourcesFileOutputStream(param.getExcelOutFilePath(), param.getExcelFileName());
-            ExportWriteHandler exportHandler = new ExportWriteHandler(inputStream, outputStream, ExcelTypeEnum.XLSX);
+            ExportWriteHandler exportHandler = new ExportWriteHandler(inputStream, outputStream, param.getExcelOutFileFullPath(), ExcelTypeEnum.XLSX);
             exportHandler.exportExcelV2007(param.getExcelSheets(), isQueue);
             //文档加密
             if (StringUtils.isNotBlank(param.getExcelOutFileFullPath()) && StringUtils.isNotBlank(param.getEncryptPwd())) {
@@ -145,11 +145,12 @@ public class IRISExcelFileFactory {
             excelWriteResponse = new ExcelWriteResponse(FileConstant.SUCCESS_CODE, param.getExcelOutFileFullPath());
         } catch (Exception e) {
             log.error("导出文件错误,{},{}", param.getExcelFileName(), e.getMessage());
-            excelWriteResponse.setMessage(e.getMessage());
+            excelWriteResponse.setMessage("【" + param.getExcelFileName() + "】导出文件错误" + (e.getMessage() != null ? e.getMessage() : ""));
         } finally {
             FileUtil.close(null, outputStream);
         }
-        log.info("======================================导出Excel结束{},耗时：{}毫秒", System.currentTimeMillis(), (System.currentTimeMillis() - startTime));
+        long totalTime = (System.currentTimeMillis() - startTime) / 1000;
+        log.info("文档导出结束{},耗时：{}秒", System.currentTimeMillis(), totalTime);
         return excelWriteResponse;
     }
 

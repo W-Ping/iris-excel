@@ -6,7 +6,7 @@ import com.iris.excelfile.constant.ExcelFormula;
 import com.iris.excelfile.constant.ExcelTypeEnum;
 import com.iris.excelfile.context.WriteContext;
 import com.iris.excelfile.core.builder.AbstractWriteBuilder;
-import com.iris.excelfile.exception.ExcelParseException;
+import com.iris.excelfile.exception.ExcelException;
 import com.iris.excelfile.metadata.*;
 import com.iris.excelfile.utils.JSONUtil;
 import com.iris.excelfile.utils.StyleUtil;
@@ -47,10 +47,10 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
 
 
     public WriteBuilderImpl(InputStream templateInputStream,
-                            OutputStream outputStream,
+                            OutputStream outputStream, String excelOutFileFullPath,
                             ExcelTypeEnum excelType) {
         try {
-            context = new WriteContext(templateInputStream, outputStream, excelType);
+            context = new WriteContext(templateInputStream, outputStream, excelOutFileFullPath, excelType);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -63,7 +63,7 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
     public void initSheet(ExcelSheet excelSheet) {
         context.currentSheet(excelSheet);
         //TODO 多线程导出有跨行要修改
-        mergeRowIndexMap.clear();
+        this.clearCache();
     }
 
     /**
@@ -91,6 +91,9 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
      */
     @Override
     public void addContent(ExcelTable table) {
+        if (table == null) {
+            return;
+        }
         List<T> data = table.getData();
         int startContentRowIndex = table.getStartContentRowIndex();
         CellStyle currentCellStyle = table.getTableStyle().getCurrentCellStyle();
@@ -99,6 +102,7 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
             addOneRowDataToExcel(data.get(i), n, currentCellStyle, table, i);
 //            StyleUtil.buildCellBorderStyle(currentCellStyle, 0, i == 0 && !table.isNeedHead(), BorderEnum.TOP);
         }
+
     }
 
 
@@ -323,17 +327,19 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
 //        if (cellStyleMap != null) {
 //            cellStyleMap.clear();
 //        }
-//        mergeRowIndexMap.clear();
+        mergeRowIndexMap.clear();
     }
 
     @Override
-    public void finish() {
-        try {
-            context.getWorkbook().getCreationHelper().createFormulaEvaluator().evaluateAll();
-            context.getWorkbook().write(context.getOutputStream());
-            context.getWorkbook().close();
-        } catch (IOException e) {
-            throw new ExcelParseException("Excel IO error", e);
-        }
+    public void finish() throws IOException {
+        context.getWorkbook().getCreationHelper().createFormulaEvaluator().evaluateAll();
+        context.getWorkbook().write(context.getOutputStream());
+        context.getWorkbook().close();
+    }
+
+
+    @Override
+    public String getOutFilePath() {
+        return context.getExcelOutFileFullPath();
     }
 }

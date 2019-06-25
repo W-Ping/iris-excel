@@ -1,6 +1,7 @@
 package com.iris.excelfile.utils;
 
 import com.iris.excelfile.annotation.ExcelWriteProperty;
+import com.iris.excelfile.exception.ExcelParseException;
 import com.iris.excelfile.metadata.BaseColumnProperty;
 import com.iris.excelfile.metadata.BaseRowModel;
 import lombok.extern.slf4j.Slf4j;
@@ -47,20 +48,26 @@ public class FieldUtil {
                 t = constructor.newInstance(fieldValue);
             }
         } catch (Exception e) {
-            log.error("ExcelWriteProperty annotation transform object{} fail", tClass);
-            e.printStackTrace();
+            log.error("ExcelWriteProperty annotation cast to object fail! {}", e.getMessage());
+            throw new ExcelParseException("ExcelWriteProperty annotation cast to object fail!");
         }
         return t;
     }
 
+    /**
+     * @param cls
+     * @return
+     */
     public static List<Field> getObjectField(Class<? extends BaseRowModel> cls) {
         List<Field> fieldList = new ArrayList<>();
         Class tempClass = cls;
+        //判断是否为BaseRowModel 的第一个子类
         boolean isBaseRowModelFirstSub = BaseRowModel.class.equals(tempClass.getSuperclass());
         while (tempClass != null) {
             //直接继承 BaseRowModel 效率更快
             if (isBaseRowModelFirstSub) {
                 fieldList.addAll(Arrays.asList(tempClass.getDeclaredFields()));
+                break;
             } else {
                 //只认子类的字段
                 Field[] declaredFields = tempClass.getDeclaredFields();

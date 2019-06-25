@@ -5,6 +5,8 @@ import com.iris.excelfile.core.builder.IWriteBuilder;
 import com.iris.excelfile.exception.ExcelParseException;
 import com.iris.excelfile.metadata.ExcelTable;
 import com.iris.excelfile.queue.IExcelWriteQueueTaskHandler;
+import com.iris.excelfile.queue.executor.LogRejectedExecutionHandler;
+import com.iris.excelfile.queue.executor.NameThreadFactory;
 import com.iris.excelfile.response.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -13,11 +15,13 @@ import java.util.List;
 import java.util.concurrent.*;
 
 /**
- * @author lwp
+ * @author liu_wp
+ * @date Created in 2019/6/25 9:13
+ * @see
  */
 @Slf4j
 public class ExcelWriteQueueTaskHandler implements IExcelWriteQueueTaskHandler<ExcelTable> {
-    private static final ConcurrentLinkedQueue<ExcelTable> queue = new ConcurrentLinkedQueue();
+    private static final ConcurrentLinkedQueue<ExcelTable> EXCELTABLE_QUEUE = new ConcurrentLinkedQueue();
     private ThreadPoolExecutor threadPoolExecutor;
     private CountDownLatch countDownLatch;
     private int threadMaxCount;
@@ -28,8 +32,8 @@ public class ExcelWriteQueueTaskHandler implements IExcelWriteQueueTaskHandler<E
         this.iWriteBuilder = iWriteBuilder;
         this.countDownLatch = new CountDownLatch(this.threadMaxCount);
         //线程池初始化
-        threadPoolExecutor = new ThreadPoolExecutor(this.threadMaxCount + FileConstant.MAX_THREAD_COUNT, this.threadMaxCount + FileConstant.MAX_THREAD_COUNT * 2, 1000, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<Runnable>());
+        threadPoolExecutor = new ThreadPoolExecutor(this.threadMaxCount + FileConstant.MAX_THREAD_COUNT, this.threadMaxCount + FileConstant.MAX_THREAD_COUNT * 2, 10, TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(10), new NameThreadFactory(FileConstant.EXPORT_THREAD_PREFIX_NAME), new LogRejectedExecutionHandler(iWriteBuilder));
     }
 
     /**
@@ -46,7 +50,7 @@ public class ExcelWriteQueueTaskHandler implements IExcelWriteQueueTaskHandler<E
     @Override
     public boolean putQueue(ExcelTable table) {
         if (table != null) {
-            return queue.offer(table);
+            return EXCELTABLE_QUEUE.offer(table);
         }
         return true;
     }
@@ -54,7 +58,7 @@ public class ExcelWriteQueueTaskHandler implements IExcelWriteQueueTaskHandler<E
     @Override
     public boolean putQueue(List<ExcelTable> list) {
         if (CollectionUtils.isEmpty(list)) {
-            return queue.addAll(list);
+            return EXCELTABLE_QUEUE.addAll(list);
         }
         return true;
     }
@@ -63,19 +67,23 @@ public class ExcelWriteQueueTaskHandler implements IExcelWriteQueueTaskHandler<E
     public void consumeQueue() {
         try {
             long start = System.currentTimeMillis();
-            log.info("--------------------开始执行多线程导出{}", start);
+            log.info("开始执行多线程导出{}", start);
             BaseResponse response = new BaseResponse();
-            Future<BaseResponse> resultSubmit = null;
             for (int i = 0; i < threadMaxCount; i++) {
-                ExcelWriteTask excelWriteTask = new ExcelWriteTask(response, queue, countDownLatch, iWriteBuilder);
+                ExcelWriteTask excelWriteTask = new ExcelWriteTask(response, EXCELTABLE_QUEUE, countDownLatch, iWriteBuilder);
                 FutureTask<BaseResponse> futureTask = new FutureTask<>(excelWriteTask);
-                resultSubmit = threadPoolExecutor.submit(futureTask, response);
+                threadPoolExecutor.submit(futureTask, response);
             }
-            countDownLatch.await();
-            log.info("--------------------结束执行多线程导出{}，多线程总耗时：{}毫秒", System.currentTimeMillis(), System.currentTimeMillis() - start);
+            countDownLatch.await(FileConstant.QUEUE_AWAIT_TIME, TimeUnit.SECONDS);
+            long time = (System.currentTimeMillis() - start) / 1000;
+            log.info("结束执行多线程导出{}，多线程总耗时：{}秒", System.currentTimeMillis(), time);
             threadPoolExecutor.shutdown();
-        } catch (Exception e) {
-            throw new ExcelParseException("多线程导出文档失败");
+            if (time >= FileConstant.QUEUE_AWAIT_TIME) {
+                throw new ExcelParseException("多线程导出文档超时");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            throw new ExcelParseException("多线程导出文档失败", e);
         }
     }
 }

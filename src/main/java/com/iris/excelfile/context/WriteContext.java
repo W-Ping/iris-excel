@@ -33,8 +33,9 @@ public class WriteContext {
     private ExcelTypeEnum excelType;
     private OutputStream outputStream;
     private boolean needInputTemplate;
+    private String excelOutFileFullPath;
 
-    public WriteContext(InputStream templateInputStream, OutputStream outputStream, ExcelTypeEnum excelType) throws IOException {
+    public WriteContext(InputStream templateInputStream, OutputStream outputStream, String excelOutFileFullPath, ExcelTypeEnum excelType) throws IOException {
         this.excelType = excelType;
         this.outputStream = outputStream;
         this.needInputTemplate = templateInputStream != null;
@@ -258,5 +259,11 @@ public class WriteContext {
         this.needInputTemplate = needInputTemplate;
     }
 
+    public String getExcelOutFileFullPath() {
+        return excelOutFileFullPath;
+    }
 
+    public void setExcelOutFileFullPath(String excelOutFileFullPath) {
+        this.excelOutFileFullPath = excelOutFileFullPath;
+    }
 }

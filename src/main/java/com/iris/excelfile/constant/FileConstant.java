@@ -27,9 +27,21 @@ public class FileConstant {
      */
     public static short DEFAULT_FOOT_FONT_SIZE = 11;
     /**
-     * 默认大于1000条数 多线程处理
+     * 导出多线程名称前缀 前缀唯一性避免被误杀
      */
-    public static int QUEUE_MAX_SIZE = 1000;
+    public static String EXPORT_THREAD_PREFIX_NAME = "IRIS-EXPORT-EXCEL-";
+    /**
+     * 默认数据量最小值-触发多线程处理
+     */
+    public static int QUEUE_MIN_DATA_SIZE = 1000;
+    /**
+     * 默认最小队列数-触发多线程处理
+     */
+    public static int QUEUE_MIN_SIZE = 5;
+    /**
+     * 多线程处理等待最大时间（秒）
+     */
+    public static long QUEUE_AWAIT_TIME = 300;
     /**
      * 最大线程数
      */

@@ -2,6 +2,7 @@ package com.iris.excelfile.metadata;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,19 +11,19 @@ import java.util.Map;
  * @date Created in 2019/3/5 10:53
  * @see
  */
-public class BaseRowModel {
-
+public class BaseRowModel implements Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * 每列样式
      */
     @Deprecated
-    private transient Map<Integer,CellStyle> cellStyleMap = new HashMap<Integer,CellStyle>();
+    private transient Map<Integer, CellStyle> cellStyleMap = new HashMap<Integer, CellStyle>();
 
-    public void addStyle(Integer row, CellStyle cellStyle){
-        cellStyleMap.put(row,cellStyle);
+    public void addStyle(Integer row, CellStyle cellStyle) {
+        cellStyleMap.put(row, cellStyle);
     }
 
-    public CellStyle getStyle(Integer row){
+    public CellStyle getStyle(Integer row) {
         CellStyle cellStyle = cellStyleMap.get(row);
         return cellStyle;
     }

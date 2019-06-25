@@ -119,16 +119,17 @@ public class ExcelSheet {
     /**
      * 判断是否加入队列处理规则
      * 1：手动设置是否调用
-     * 2：数据大于设置阈值(必要条件)
+     * 2：数据不小于设置最小阈值(必要条件)
+     * 3：消息队列不小于设置最小阈值(必要条件)
      *
      * @param excelSheet
      * @param tableDataSizeTotal
      */
     private void isQueueTaskRule(ExcelSheet excelSheet, Integer tableDataSizeTotal) {
         if (excelSheet.isQueueTask()) {
-            this.queueTask = FileConstant.QUEUE_MAX_SIZE < tableDataSizeTotal;
+            this.queueTask = FileConstant.QUEUE_MIN_DATA_SIZE < tableDataSizeTotal;
         }
-        excelSheet.setQueueTask(this.queueTask);
+        excelSheet.setQueueTask(excelSheet.getExcelTables().size() >= FileConstant.QUEUE_MIN_SIZE ? this.queueTask : false);
     }
 
     /**

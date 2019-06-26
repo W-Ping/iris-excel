@@ -70,7 +70,7 @@ public class IRISExcelFileFactory {
      * @return
      */
     public static ExcelWriteResponse exportV2007WithTemplate(ExcelWriteParam param, InputStream inputStream) {
-        return exportV2007WithTemplate(param, inputStream, true);
+        return exportV2007WithTemplate(param, inputStream, false);
     }
 
     /**

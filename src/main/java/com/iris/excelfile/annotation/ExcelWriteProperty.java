@@ -47,4 +47,9 @@ public @interface ExcelWriteProperty {
      */
     String dateFormat() default "";
 
+    /**
+     * @return
+     */
+    boolean keepTpStyle() default false;
+
 }

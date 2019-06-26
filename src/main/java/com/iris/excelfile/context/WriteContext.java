@@ -9,10 +9,7 @@ import com.iris.excelfile.metadata.*;
 import com.iris.excelfile.utils.StyleUtil;
 import com.iris.excelfile.utils.WorkBookUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.io.IOException;
@@ -62,6 +59,8 @@ public class WriteContext {
      * @param excelSheet
      */
     public void initSheet(ExcelSheet excelSheet) {
+        //使用模板公式
+        this.getCurrentSheet().setForceFormulaRecalculation(true);
         //加载处理模板
         if (this.needInputTemplate && excelSheet.getWriteLoadTemplateHandler() != null) {
             excelSheet.getWriteLoadTemplateHandler().beforeLoadTemplate(this.workbook, this.currentSheet);
@@ -75,8 +74,14 @@ public class WriteContext {
         if (freezePaneRange != null) {
             this.currentSheet.createFreezePane(freezePaneRange.getCellCount(), freezePaneRange.getRowCount(), freezePaneRange.getCellIndex(), freezePaneRange.getRowIndex());
         }
-        //设置保护密码
-        this.currentSheet.protectSheet(StringUtils.isNotBlank(excelSheet.getProtectSheetPwd()) ? excelSheet.getProtectSheetPwd() : FileConstant.PROTECT_SHEET_PASSWORD);
+        boolean tableLock = excelSheet.getExcelTables().stream().anyMatch(v -> v.isLocked());
+        if (excelSheet.isLocked() && StringUtils.isNotBlank(excelSheet.getProtectSheetPwd())) {
+            this.currentSheet.protectSheet(excelSheet.getProtectSheetPwd());
+        } else if ((excelSheet.isLocked() || tableLock) && StringUtils.isBlank(excelSheet.getProtectSheetPwd())) {
+            //设置默认保护密码
+            this.currentSheet.protectSheet(FileConstant.PROTECT_SHEET_PASSWORD);
+        }
+
         //设置列宽
         StyleUtil.buildTableWidthStyle(this.getCurrentSheet(), this.currentExcelSheetParam.getColumnWidthMap());
     }

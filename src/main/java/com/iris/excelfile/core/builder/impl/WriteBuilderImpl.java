@@ -6,7 +6,6 @@ import com.iris.excelfile.constant.ExcelFormula;
 import com.iris.excelfile.constant.ExcelTypeEnum;
 import com.iris.excelfile.context.WriteContext;
 import com.iris.excelfile.core.builder.AbstractWriteBuilder;
-import com.iris.excelfile.exception.ExcelException;
 import com.iris.excelfile.metadata.*;
 import com.iris.excelfile.utils.JSONUtil;
 import com.iris.excelfile.utils.StyleUtil;
@@ -196,7 +195,7 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
         for (int i = 0; i < oneRowData.size(); i++) {
             Object cellValue = oneRowData.get(i);
             Cell cell = WorkBookUtil.createCell(row, i + excelTable.getFirstCellIndex(), cellStyle, cellValue,
-                    TypeUtil.isNum(cellValue), false);
+                    TypeUtil.isNum(cellValue), false, false);
             if (excelTable.getWriteAfterHandler() != null) {
                 excelTable.getWriteAfterHandler().cell(i, cell);
             }
@@ -242,6 +241,7 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
                     cellStyle1 = cellStyleMap.get(i + startCellIndex);
                 }
                 isSeqNo = excelColumnProperty.isSeqNo();
+                boolean keepTpStyle = excelColumnProperty.isKeepTpStyle();
                 String dicValue = null;
                 //合并行和合并列
                 mergeCellIndex = excelColumnProperty.getMergeCellIndex();
@@ -267,6 +267,9 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
                 }
                 if (isSeqNo) {
                     cellValue = String.valueOf(loop + 1);
+                } else if (keepTpStyle) {
+                    cellValue = TypeUtil.getFieldStringValue(beanMap, excelColumnProperty.getField().getName(),
+                            dateFormat);
                 } else {
                     isNullField = excelColumnProperty.getField() == null;
                     sumCellFormula = excelColumnProperty.getSumCellFormula();
@@ -308,9 +311,9 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
                         cellStyle1 = fieldIsNullStyle;
                     }
                 }
-                Cell cell = WorkBookUtil.createCell(row, i + startCellIndex, cellStyle1, cellValue,
+                Cell cell = WorkBookUtil.createCell(context.getCurrentSheet(), row, i + startCellIndex, cellStyle1, cellValue,
                         cellValue != null && !isFormula && StringUtils.isBlank(dicValue)
-                                ? TypeUtil.isNum(excelColumnProperty.getField()) : false, isFormula);
+                                ? TypeUtil.isNum(excelColumnProperty.getField()) : false, isFormula, keepTpStyle, isSeqNo);
                 if (excelTable.getWriteAfterHandler() != null) {
                     excelTable.getWriteAfterHandler().cell(i, cell);
                 }
@@ -332,7 +335,7 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
 
     @Override
     public void finish() throws IOException {
-        context.getWorkbook().getCreationHelper().createFormulaEvaluator().evaluateAll();
+//        context.getWorkbook().getCreationHelper().createFormulaEvaluator().evaluateAll();
         context.getWorkbook().write(context.getOutputStream());
         context.getWorkbook().close();
     }

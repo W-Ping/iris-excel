@@ -47,6 +47,8 @@ public class ExcelColumnProperty extends BaseColumnProperty {
      */
     private boolean isSeqNo;
 
+    private boolean keepTpStyle;
+
     public ExcelColumnProperty() {
     }
 
@@ -55,10 +57,10 @@ public class ExcelColumnProperty extends BaseColumnProperty {
     }
 
     public ExcelColumnProperty(Field field, int index, List<String> head, String dateFormat, String divideCellFormula, List<String> sumCellFormula) {
-        this(field, index, head, false, false, null, 0, dateFormat, divideCellFormula, sumCellFormula);
+        this(field, index, head, false, false, null, 0, dateFormat, divideCellFormula, sumCellFormula, false);
     }
 
-    public ExcelColumnProperty(Field field, int index, List<String> head, boolean isSeqNo, boolean ignoreField, Integer mergeCellIndex, int mergeRowCount, String dateFormat, String divideCellFormula, List<String> sumCellFormula) {
+    public ExcelColumnProperty(Field field, int index, List<String> head, boolean isSeqNo, boolean ignoreField, Integer mergeCellIndex, int mergeRowCount, String dateFormat, String divideCellFormula, List<String> sumCellFormula, boolean keepTpStyle) {
         this.field = field;
         this.index = index;
         this.head = head;
@@ -69,6 +71,7 @@ public class ExcelColumnProperty extends BaseColumnProperty {
         this.dateFormat = dateFormat;
         this.divideCellFormula = divideCellFormula;
         this.sumCellFormula = sumCellFormula;
+        this.keepTpStyle = keepTpStyle;
     }
 
     public Field getField() {
@@ -152,6 +155,14 @@ public class ExcelColumnProperty extends BaseColumnProperty {
 
     public void setMultiCellFormula(String multiCellFormula) {
         this.multiCellFormula = multiCellFormula;
+    }
+
+    public boolean isKeepTpStyle() {
+        return keepTpStyle;
+    }
+
+    public void setKeepTpStyle(boolean keepTpStyle) {
+        this.keepTpStyle = keepTpStyle;
     }
 
     @Override

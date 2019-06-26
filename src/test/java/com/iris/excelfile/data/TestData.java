@@ -260,6 +260,7 @@ public class TestData {
         return model1s;
     }
 
+
     /**
      * DCC 数据
      *
@@ -333,6 +334,64 @@ public class TestData {
         return model1s;
     }
 
+    public static CrossReportGroupModel2 mockCrossReportTemplate() {
+        CrossReportGroupModel2 model1 = new CrossReportGroupModel2();
+        int type = (int) (1 + Math.random() * (100 - 10 + 1));
+        model1.setEmpType("1");
+        model1.setDateVersion(LocalDate.now().toString());
+        model1.setCustomerFlowAllTargetValue(199 + type);
+        model1.setCustomerFlowAllActualValue(10 * type + 100);
+        model1.setInitiativeCollectAllTargetValue(299);
+        model1.setInitiativeCollectAllActualValue(398);
+        model1.setCustomerFlowTargetValue(340 * type);
+        model1.setCustomerFlowActualValue(340);
+        model1.setIncomingCallAllTargetValue(340);
+        model1.setIncomingCallAllActualValue(340);
+        model1.setIncomingCallTargetValue(340);
+        model1.setIncomingCallActualValue(340 + type);
+        model1.setNetworkAllTargetValue(340);
+        model1.setNetworkAllActualValue(340);
+        model1.setNetworkTargetValue(340);
+        model1.setNetworkActualValue(340);
+
+        model1.setInitiativeCollectTargetValue(340);
+        model1.setInitiativeCollectActualValue(340);
+        model1.setRecommendAllTargetValue(340);
+        model1.setRecommendAllActualValue(340);
+        model1.setRecommendTargetValue(340);
+        model1.setRecommendActualValue(340);
+        model1.setBuyAgainAllTargetValue(340);
+        model1.setBuyAgainAllActualValue(340);
+        model1.setBuyAgainTargetValue(340);
+        model1.setBuyAgainActualValue(340);
+        model1.setActiveAllTargetValue(340 + type);
+        model1.setActiveAllActualValue(340);
+        model1.setActiveTargetValue(340);
+        model1.setActiveActualValue(340);
+        model1.setDormantAllTargetValue(340);
+        model1.setDormantAllActualValue(340 + type);
+        model1.setDormantTargetValue(340);
+        model1.setDormantActualValue(340);
+        model1.setCustomerFlowTotalTargetValue(340 + type);
+        model1.setCustomerFlowTotalActualValue(340);
+        model1.setIntoStoreSaleTotalTargetValue(340);
+        model1.setIntoStoreSaleTotalActualValue(340);
+        model1.setQuotedPriceCountTargetValue(340);
+        model1.setQuotedPriceCountActualValue(340);
+        model1.setOrderCountTargetValue(340);
+        model1.setOrderCountActualValue(340);
+        model1.setInvoicedCountTargetValue(340);
+        model1.setInvoicedCountActualValue(340);
+        model1.setFirstTestDriveCountTargetValue(340);
+        model1.setFirstTestDriveCountActualValue(340);
+
+        model1.setFinancialCountTargetValue(11);
+        model1.setFinancialCountActualValue(12);
+        model1.setInsuranceCountTargetValue(22);
+        model1.setInsuranceCountActualValue(23);
+        return model1;
+    }
+
     /**
      * @param size
      * @return
@@ -390,16 +449,18 @@ public class TestData {
                 model1.setInvoicedCountActualValue(340);
                 model1.setFirstTestDriveCountTargetValue(340);
                 model1.setFirstTestDriveCountActualValue(340);
-                model1.setFinancialCountTargetValue(340);
-                model1.setFinancialCountActualValue(340);
-                model1.setInsuranceCountTargetValue(340);
-                model1.setInsuranceCountActualValue(340);
-                model1.setSkuGoodsAmountTargetValue(new BigDecimal("23888.16945678"));
-                model1.setSkuGoodsAmountActualValue(new BigDecimal("23888.16345678"));
-                model1.setExtendWarrantyCountTargetValue(345);
-                model1.setExtendWarrantyCountActualValue(345);
-                model1.setOtherCountTargetValue(345);
-                model1.setOtherCountActualValue(345 + type);
+                if (i == 0) {
+                    model1.setFinancialCountTargetValue(340);
+                    model1.setFinancialCountActualValue(340);
+                    model1.setInsuranceCountTargetValue(340);
+                    model1.setInsuranceCountActualValue(340);
+                    model1.setSkuGoodsAmountTargetValue(new BigDecimal("23888.16945678"));
+                    model1.setSkuGoodsAmountActualValue(new BigDecimal("23888.16345678"));
+                    model1.setExtendWarrantyCountTargetValue(345);
+                    model1.setExtendWarrantyCountActualValue(345);
+                    model1.setOtherCountTargetValue(345);
+                    model1.setOtherCountActualValue(345 + type);
+                }
             }
             model1s.add(model1);
 

@@ -40,10 +40,11 @@ public class FieldUtil {
                 String[] sumCellFormula = annotation.sumCellFormula();
                 String dateFormat = annotation.dateFormat();
                 boolean isSeqNo = annotation.isSeqNo();
-                Class<?>[] fieldClass = {Field.class, int.class, List.class, boolean.class, boolean.class, Integer.class, int.class, String.class, String.class, List.class};
+                boolean keepTpStyle = annotation.keepTpStyle();
+                Class<?>[] fieldClass = {Field.class, int.class, List.class, boolean.class, boolean.class, Integer.class, int.class, String.class, String.class, List.class, boolean.class};
                 Object[] fieldValue = {field, annotation.index(),
                         Arrays.asList(headValue), isSeqNo, ignore, mergeCellIndex >= 0 ? mergeCellIndex : null,
-                        mergeRowCount < 0 ? 0 : mergeRowCount, dateFormat, divideCellFormula, Arrays.asList(sumCellFormula)};
+                        mergeRowCount < 0 ? 0 : mergeRowCount, dateFormat, divideCellFormula, Arrays.asList(sumCellFormula), keepTpStyle};
                 Constructor<T> constructor = tClass.getDeclaredConstructor(fieldClass);
                 t = constructor.newInstance(fieldValue);
             }

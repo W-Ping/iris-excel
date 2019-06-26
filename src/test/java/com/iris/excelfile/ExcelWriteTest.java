@@ -36,14 +36,19 @@ public class ExcelWriteTest {
         List<ExcelTable> tbList = new ArrayList<>();
         int tableNo = 1;
         List<CrossReportGroupModel> mockCrossReportTemplate = TestData.mockCrossReportTemplate(2, null);
-        ExcelTable tp = new ExcelTable(tableNo, null, CrossReportGroupModel.class, mockCrossReportTemplate);
+        ExcelTable tp = new ExcelTable(tableNo, null, CrossReportGroupModel.class, Arrays.asList(mockCrossReportTemplate.get(0)));
         tp.setFirstRowIndex(6);
-        tp.setMinDataRowCount(2);
         tp.setNeedHead(false);
         tp.setTableName("第一个表");
+        tp.setWriteBeforeHandler(new CrossTeamWriteBeforeHandlerImpl());
         tp.setDictionaryRefHandler(new DictionaryData());
 //        tp.setTableDataDefaultFormat(DataFormatEnum.NUMBER_2_CURRENCY_US);
         tbList.add(tp);
+        tableNo++;
+        CrossReportGroupModel2 crossReportGroupModel2 = TestData.mockCrossReportTemplate();
+        ExcelTable tp1 = new ExcelTable(tableNo, null, CrossReportGroupModel2.class, Arrays.asList(crossReportGroupModel2));
+        tp1.setNeedHead(false);
+        tbList.add(tp1);
         tableNo++;
 //        List<CrossReportGroupModel> testTemplateCrossReportTestMode2 = TestData.emptyDataModel();
         List<CrossReportGroupModel> mockCrossReportTemplate1 = TestData.mockCrossReportTemplate(1, "market");
@@ -136,11 +141,10 @@ public class ExcelWriteTest {
         int tableNo1 = excelTable.getTableNo();
         ExcelShiftRange excelShiftRange = excelTable.getExcelShiftRange();
         int initIndex = excelShiftRange.getStartRow() + excelShiftRange.getShiftNumber();
-        Map<String, List<CrossReportRateModel>> tempCrossReportRateTestModel = TestData.mockSCCrossReportRateData(15);
-        int j = 0;
         System.out.println("startRow----:" + startRow);
         initIndex += 6;
         tableNo1++;
+        Map<String, List<CrossReportRateModel>> tempCrossReportRateTestModel = TestData.mockSCCrossReportRateData(15);
         for (Map.Entry<String, List<CrossReportRateModel>> map : tempCrossReportRateTestModel.entrySet()) {
             String key = map.getKey();
             List<CrossReportRateGroupNameModel> groupList = Arrays.asList(TestData.mockGroupSCCrossReportRate(key));
@@ -159,7 +163,7 @@ public class ExcelWriteTest {
             gShiftRange3.setStartRow(initIndex);
             gShiftRange3.setShiftNumber(map.getValue().size());
             excelTable1.setExcelShiftRange(gShiftRange3);
-            excelTable1.setTableDataDefaultFormat(DataFormatEnum.NUMBER_1_PERCENT);
+            excelTable1.setTableDataDefaultFormat(DataFormatEnum.NUMBER_2_PERCENT);
             excelTable1.setDivideFormulaTRefTable(divideFormulaTRefTable);
             excelTable1.setWriteBeforeHandler(new CrossRateWriteBeforeHandlerImpl());
             tbList.add(excelTable1);
@@ -167,19 +171,19 @@ public class ExcelWriteTest {
             tableNo1++;
             divideFormulaTRefTable += 2;
         }
+        ExcelSheet sheet1 = new ExcelSheet(0, tbList);
         Map<String, String> refMap = new HashMap<>();
         refMap.put("YYYY", LocalDate.now().getYear() + "");
         refMap.put("MM", LocalDate.now().getMonthValue() + "");
-        ExcelSheet sheet1 = new ExcelSheet(0, tbList);
         sheet1.setWriteLoadTemplateHandler(new CrossWriteLoadTemplateHandlerImpl(refMap));
-        sheet1.setSheetDataDefaultFormat(DataFormatEnum.NUMBER_1_KILOBIT);
+        sheet1.setSheetDataDefaultFormat(DataFormatEnum.NUMBER_2_ROUND_UP);
         ExcelFreezePaneRange freezePaneRange = new ExcelFreezePaneRange();
         freezePaneRange.setCellIndex(1);
         freezePaneRange.setCellCount(1);
         freezePaneRange.setRowCount(6);
         freezePaneRange.setRowIndex(7);
         sheet1.setFreezePaneRange(freezePaneRange);
-        sheet1.setLocked(true);
+        sheet1.setLocked(false);
         List<ExcelSheet> sheets = new ArrayList<ExcelSheet>() {{
             add(sheet1);
         }};
@@ -350,7 +354,7 @@ public class ExcelWriteTest {
         freezePaneRange.setRowCount(6);
         freezePaneRange.setRowIndex(7);
         sheet1.setFreezePaneRange(freezePaneRange);
-        sheet1.setLocked(true);
+        sheet1.setLocked(false);
         List<ExcelSheet> sheets = new ArrayList<ExcelSheet>() {{
             add(sheet1);
         }};

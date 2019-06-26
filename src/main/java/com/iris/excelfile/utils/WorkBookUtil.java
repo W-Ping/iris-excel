@@ -73,17 +73,22 @@ public class WorkBookUtil {
     }
 
     public static Cell createCell(Row row, int colNum, CellStyle cellStyle, String cellValue) {
-        return createCell(row, colNum, cellStyle, cellValue, false, false);
+        return createCell(row, colNum, cellStyle, cellValue, false, false, false);
     }
 
     public static Sheet createSheet(Workbook workbook, ExcelSheet excelSheet) {
         return workbook.createSheet(excelSheet.getSheetName() != null ? excelSheet.getSheetName() : excelSheet.getSheetNo() + "");
     }
 
-    public static Cell createCell(Row row, int colNum, CellStyle cellStyle, Object cellValue, Boolean isNum, Boolean isFormula) {
-        Cell cell = row.createCell(colNum);
-        cell.setCellStyle(cellStyle);
-        if (null != cellValue) {
+    public static Cell createCell(Sheet sheet, Row row, int colNum, CellStyle cellStyle, Object cellValue, Boolean isNum, Boolean isFormula, boolean keepTpStyle, boolean isSeqNo) {
+        Cell cell = null;
+        if (!keepTpStyle || isSeqNo) {
+            cell = row.createCell(colNum);
+            cell.setCellStyle(cellStyle);
+        } else if (sheet != null) {
+            cell = sheet.getRow(row.getRowNum()).getCell(colNum);
+        }
+        if (null != cellValue && cell != null) {
             if (isFormula) {
                 cell.setCellFormula(cellValue.toString());
             } else {
@@ -95,6 +100,10 @@ public class WorkBookUtil {
             }
         }
         return cell;
+    }
+
+    public static Cell createCell(Row row, int colNum, CellStyle cellStyle, Object cellValue, Boolean isNum, Boolean isFormula, boolean isSeqNo) {
+        return createCell(null, row, colNum, cellStyle, cellValue, isNum, isFormula, false, isSeqNo);
     }
 
 

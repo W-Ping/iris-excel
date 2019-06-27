@@ -135,7 +135,7 @@ public class IRISExcelFileFactory {
             if (inputStream == null && StringUtils.isNotBlank(param.getExcelTemplateFile())) {
                 inputStream = FileUtil.synGetResourcesFileInputStream(param.getExcelTemplateFile());
             }
-            outputStream = FileUtil.synGetResourcesFileOutputStream(param.getExcelOutFilePath(), param.getExcelFileName());
+            outputStream = FileUtil.synGetResourcesFileOutputStream(param.getExcelOutFileFullPath());
             ExportWriteHandler exportHandler = new ExportWriteHandler(inputStream, outputStream, param.getExcelOutFileFullPath(), ExcelTypeEnum.XLSX);
             exportHandler.exportExcelV2007(param.getExcelSheets(), isQueue);
             //文档加密
@@ -174,27 +174,29 @@ public class IRISExcelFileFactory {
         if (excelWriteParam == null) {
             throw new ExportException("export params is null");
         }
-        if (StringUtils.isBlank(excelWriteParam.getExcelOutFilePath())) {
-            excelWriteParam.setExcelOutFilePath(FileUtil.createTempDirectory());
+        //如果没有传入导出文件信息 创建临时导出文件
+        if (StringUtils.isBlank(excelWriteParam.getExcelOutFileFullPath())) {
+            excelWriteParam.setExcelOutFileFullPath(FileUtil.createTempOutFile(FileUtil.createTempDirectory(), ExcelTypeEnum.XLSX));
         }
-        String excelFileName = excelWriteParam.getExcelFileName();
-        if (StringUtils.isBlank(excelFileName)) {
-            throw new ExportException("excel fileName is null");
+        String excelOutFileFullPath = excelWriteParam.getExcelOutFileFullPath();
+        if (StringUtils.isBlank(excelOutFileFullPath)) {
+            throw new ExportException("excel file is null");
         } else {
-            if (excelFileName.lastIndexOf(".") != -1) {
+            if (excelOutFileFullPath.lastIndexOf(".") != -1) {
                 if (ExcelTypeEnum.XLSX.equals(excelTypeEnum)
-                        && !ExcelTypeEnum.XLSX.getValue().equals(excelFileName.substring(excelFileName.lastIndexOf(".")))) {
+                        && !ExcelTypeEnum.XLSX.getValue().equals(excelOutFileFullPath.substring(excelOutFileFullPath.lastIndexOf(".")))) {
                     throw new ExportException("excel fileType is not xlsx");
                 } else if (ExcelTypeEnum.XLS.equals(excelTypeEnum)
-                        && !ExcelTypeEnum.XLS.getValue().equals(excelFileName.substring(excelFileName.lastIndexOf(".")))) {
+                        && !ExcelTypeEnum.XLS.getValue().equals(excelOutFileFullPath.substring(excelOutFileFullPath.lastIndexOf(".")))) {
                     throw new ExportException("excel fileType is not xls");
                 }
             } else {
-                throw new ExportException("excel fileName is error");
+                throw new ExportException("excel file type is error");
             }
         }
         validateSheets(excelWriteParam.getExcelSheets());
     }
+
 
     private static void validateSheets(List<ExcelSheet> excelSheets) throws ExportException {
         if (CollectionUtils.isEmpty(excelSheets)) {

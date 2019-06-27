@@ -1,16 +1,19 @@
 package com.iris.excelfile.utils;
 
+import com.iris.excelfile.constant.ExcelTypeEnum;
 import com.iris.excelfile.exception.ExcelParseException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 
 import java.io.*;
 import java.net.URL;
+import java.time.LocalDate;
+import java.util.UUID;
 
 @Slf4j
 public class FileUtil {
     private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
-    private static final String FILETEMP = "fileTemp";
+    private static final String FILETEMP = "exportFileTmp";
 
     public static InputStream getResourcesFileInputStream(String fileName) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream("" + fileName);
@@ -32,6 +35,14 @@ public class FileUtil {
             file.mkdirs();
         }
         file = new File(fileReplacePath(filePath + "/" + fileName));
+        return new FileOutputStream(file);
+    }
+
+    public static synchronized OutputStream synGetResourcesFileOutputStream(String excelOutFileFullPath) throws IOException {
+        File file = new File(fileReplacePath(excelOutFileFullPath));
+        if (!file.exists() && file.isFile()) {
+            file.createNewFile();
+        }
         return new FileOutputStream(file);
     }
 
@@ -105,6 +116,23 @@ public class FileUtil {
             syncCreateTempFilesDirectory(directory);
         }
         return directory.getAbsolutePath();
+    }
+
+    /**
+     * @param path
+     * @param excelTypeEnum
+     * @return
+     */
+    public static synchronized String createTempOutFile(String path, ExcelTypeEnum excelTypeEnum) {
+        File file = new File(fileReplacePath(path + "/" + UUID.randomUUID().toString() + "_" + LocalDate.now() + excelTypeEnum.getValue()));
+        if (!file.isFile()) {
+            try {
+                file.createNewFile();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return file.getPath();
     }
 
     /**

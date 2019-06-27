@@ -385,10 +385,10 @@ public class TestData {
         model1.setFirstTestDriveCountTargetValue(340);
         model1.setFirstTestDriveCountActualValue(340);
 
-        model1.setFinancialCountTargetValue(11);
-        model1.setFinancialCountActualValue(12);
-        model1.setInsuranceCountTargetValue(22);
-        model1.setInsuranceCountActualValue(23);
+//        model1.setFinancialCountTargetValue(11);
+//        model1.setFinancialCountActualValue(12);
+//        model1.setInsuranceCountTargetValue(22);
+//        model1.setInsuranceCountActualValue(23);
         return model1;
     }
 

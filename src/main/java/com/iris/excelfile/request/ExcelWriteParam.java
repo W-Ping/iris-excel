@@ -3,6 +3,7 @@ package com.iris.excelfile.request;
 
 import com.iris.excelfile.metadata.ExcelSheet;
 import com.iris.excelfile.utils.FileUtil;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.List;
@@ -80,7 +81,10 @@ public class ExcelWriteParam implements Serializable {
         if (this.excelOutFileFullPath != null && this.excelOutFileFullPath.length() > 0) {
             return this.excelOutFileFullPath;
         }
-        return FileUtil.fileReplacePath(this.excelOutFilePath + "/" + this.excelFileName);
+        if (StringUtils.isNotBlank(this.excelOutFilePath) && StringUtils.isNotBlank(this.excelFileName)) {
+            return FileUtil.fileReplacePath(this.excelOutFilePath + "/" + this.excelFileName);
+        }
+        return StringUtils.EMPTY;
     }
 
     public void setExcelOutFileFullPath(String excelOutFileFullPath) {

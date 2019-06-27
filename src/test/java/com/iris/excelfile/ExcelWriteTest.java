@@ -188,9 +188,10 @@ public class ExcelWriteTest {
             add(sheet1);
         }};
         ExcelWriteParam excelWriteParam = new ExcelWriteParam();
-        excelWriteParam.setExcelFileName(outFileName);
-        excelWriteParam.setExcelOutFilePath(outFilePath);
+//        excelWriteParam.setExcelFileName(outFileName);
+//        excelWriteParam.setExcelOutFilePath(outFilePath);
         excelWriteParam.setExcelTemplateFile(outTemplate);
+        excelWriteParam.setExcelOutFileFullPath(outFilePath + outFileName);
         excelWriteParam.setExcelSheets(sheets);
 //        excelWriteParam.setEncryptPwd("lzg");
         ExcelWriteResponse export = IRISExcelFileFactory.exportV2007WithTemplate(excelWriteParam, resourcesFileInputStream);

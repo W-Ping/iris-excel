@@ -226,6 +226,7 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
             String cellValue = null;
             CellStyle fieldIsNullStyle = null;
             boolean isSeqNo = false;
+            boolean keepTpStyle = false;
             int lastIndex = columnPropertyList.size() - 1;
             for (int i = 0; i < columnPropertyList.size(); i++) {
                 ExcelColumnProperty excelColumnProperty = columnPropertyList.get(i);
@@ -241,7 +242,7 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
                     cellStyle1 = cellStyleMap.get(i + startCellIndex);
                 }
                 isSeqNo = excelColumnProperty.isSeqNo();
-                boolean keepTpStyle = excelColumnProperty.isKeepTpStyle();
+                keepTpStyle = excelColumnProperty.isKeepTpStyle();
                 String dicValue = null;
                 //合并行和合并列
                 mergeCellIndex = excelColumnProperty.getMergeCellIndex();
@@ -267,9 +268,6 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
                 }
                 if (isSeqNo) {
                     cellValue = String.valueOf(loop + 1);
-                } else if (keepTpStyle) {
-                    cellValue = TypeUtil.getFieldStringValue(beanMap, excelColumnProperty.getField().getName(),
-                            dateFormat);
                 } else {
                     isNullField = excelColumnProperty.getField() == null;
                     sumCellFormula = excelColumnProperty.getSumCellFormula();
@@ -277,7 +275,10 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
                     dateFormat = excelColumnProperty.getDateFormat();
                     //使用SUM和divide计算公式
                     isFormula = !CollectionUtils.isEmpty(sumCellFormula) || StringUtils.isNotBlank(divideCellFormula);
-                    if (excelTable.isEffectExcelFormula() && isFormula) {
+                    if (keepTpStyle) {
+                        cellValue = TypeUtil.getFieldStringValue(beanMap, excelColumnProperty.getField().getName(),
+                                dateFormat);
+                    } else if (excelTable.isEffectExcelFormula() && isFormula) {
                         if (!CollectionUtils.isEmpty(sumCellFormula)) {
                             cellValue = ExcelFormula.assemblyExcelFormula(row.getRowNum() + 1, sumCellFormula, ExcelFormula.ADDITION);
                         } else if (StringUtils.isNotBlank(divideCellFormula)) {

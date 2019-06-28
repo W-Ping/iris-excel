@@ -45,7 +45,7 @@ public class FileConstant {
     /**
      * 最大线程数
      */
-    public static int MAX_THREAD_COUNT = 5;
+    public static int MAX_THREAD_COUNT = 10;
     /**
      * 线程数量计算因子 表数量 * 计算因子
      */

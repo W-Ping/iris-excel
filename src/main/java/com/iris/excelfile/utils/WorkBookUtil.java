@@ -92,7 +92,7 @@ public class WorkBookUtil {
             if (isFormula) {
                 cell.setCellFormula(cellValue.toString());
             } else {
-                if (isNum) {
+                if (isNum && !isSeqNo) {
                     cell.setCellValue(Double.parseDouble(cellValue.toString()));
                 } else {
                     cell.setCellValue(cellValue.toString());

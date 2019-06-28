@@ -55,7 +55,7 @@ public interface IWriteBuilder {
      *
      * @param table
      */
-    void addContent(ExcelTable table);
+    boolean addContent(ExcelTable table);
 
 
     /**

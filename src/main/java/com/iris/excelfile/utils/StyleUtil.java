@@ -48,10 +48,10 @@ public class StyleUtil {
      * @param workbook
      * @return
      */
-    public static CellStyle defaultContentCellStyle(Workbook workbook, int tableNo, boolean locked) {
+    public static CellStyle defaultContentCellStyle(Workbook workbook, int tableNo, IndexedColors defaultColor, boolean locked) {
         CellStyle cellStyle = defaultContentCellStyle.get(tableNo);
         if (cellStyle == null) {
-            cellStyle = buildBaseIsNotBoldCellStyle(workbook, FileConstant.DEFAULT_CONTENT_FONT_SIZE, IndexedColors.GREY_25_PERCENT, locked);
+            cellStyle = buildBaseIsNotBoldCellStyle(workbook, FileConstant.DEFAULT_CONTENT_FONT_SIZE, defaultColor != null ? defaultColor : IndexedColors.WHITE, locked);
             defaultContentCellStyle.put(tableNo, cellStyle);
         }
         return cellStyle;
@@ -159,7 +159,7 @@ public class StyleUtil {
         } else if (TableBodyEnum.FOOT.equals(tableBodyEnum)) {
             cellStyle = defaultFootCellStyle(workbook, tableNo, locked);
         } else {
-            cellStyle = defaultContentCellStyle(workbook, tableNo, locked);
+            cellStyle = defaultContentCellStyle(workbook, tableNo, indexedColors, locked);
         }
         if (f != null) {
             Font font = workbook.createFont();

@@ -8,6 +8,7 @@ import com.iris.excelfile.core.handler.extend.IWriteLoadTemplateHandler;
 import com.iris.excelfile.exception.ExcelParseException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.poi.ss.usermodel.IndexedColors;
 
 import java.util.*;
 
@@ -70,6 +71,11 @@ public class ExcelSheet {
      *
      */
     private boolean queueTask;
+
+    /**
+     * 默认背景颜色
+     */
+    private IndexedColors defaultBackGroundColor;
 
     public ExcelSheet(int sheetNo, List<ExcelTable> excelTables) {
         this(sheetNo, null, excelTables, true);
@@ -184,6 +190,17 @@ public class ExcelSheet {
         if (excelTable.getTableDataDefaultFormat() == null) {
             excelTable.setTableDataDefaultFormat(excelSheet.getSheetDataDefaultFormat());
         }
+        //默认背景颜色
+        ExcelStyle tableStyle = excelTable.getTableStyle();
+        if (tableStyle == null) {
+            tableStyle = new ExcelStyle();
+            tableStyle.setExcelBackGroundColor(excelSheet.getDefaultBackGroundColor());
+        } else {
+            if (tableStyle.getExcelBackGroundColor() == null) {
+                tableStyle.setExcelBackGroundColor(excelSheet.getDefaultBackGroundColor());
+            }
+        }
+        excelTable.setTableStyle(tableStyle);
         //行高
         excelTable.setHeightInPoints(excelSheet.getHeightInPoints());
         //是否上保护锁
@@ -382,6 +399,14 @@ public class ExcelSheet {
 
     public void setQueueTask(boolean queueTask) {
         this.queueTask = queueTask;
+    }
+
+    public IndexedColors getDefaultBackGroundColor() {
+        return defaultBackGroundColor;
+    }
+
+    public void setDefaultBackGroundColor(IndexedColors defaultBackGroundColor) {
+        this.defaultBackGroundColor = defaultBackGroundColor;
     }
 
     public void setMergeData(List<Integer[]> mergeData) {

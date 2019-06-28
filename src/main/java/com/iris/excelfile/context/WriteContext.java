@@ -160,7 +160,11 @@ public class WriteContext {
             tableStyle.setCurrentCellStyle(cellStyle);
         } else {
             tableStyle = new ExcelStyle();
-            cellStyle = StyleUtil.defaultContentCellStyle(this.workbook, table.getTableNo(), table.isLocked());
+            IndexedColors defaultColor = null;
+            if (table.getTableStyle() != null) {
+                defaultColor = table.getTableStyle().getExcelBackGroundColor();
+            }
+            cellStyle = StyleUtil.defaultContentCellStyle(this.workbook, table.getTableNo(), defaultColor, table.isLocked());
             tableStyle.setDefaultCellStyle(cellStyle);
         }
         tableStyle.setCurrentCellStyle(cellStyle);

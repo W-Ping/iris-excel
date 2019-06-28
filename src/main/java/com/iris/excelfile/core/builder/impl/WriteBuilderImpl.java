@@ -89,19 +89,24 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
      * @param table
      */
     @Override
-    public void addContent(ExcelTable table) {
-        if (table == null) {
-            return;
-        }
-        List<T> data = table.getData();
-        int startContentRowIndex = table.getStartContentRowIndex();
-        CellStyle currentCellStyle = table.getTableStyle().getCurrentCellStyle();
-        for (int i = 0; i < data.size(); i++) {
-            int n = i + startContentRowIndex;
-            addOneRowDataToExcel(data.get(i), n, currentCellStyle, table, i);
+    public boolean addContent(ExcelTable table) {
+        if (table != null) {
+            try {
+                List<T> data = table.getData();
+                int startContentRowIndex = table.getStartContentRowIndex();
+                CellStyle currentCellStyle = table.getTableStyle().getCurrentCellStyle();
+                for (int i = 0; i < data.size(); i++) {
+                    int n = i + startContentRowIndex;
+                    addOneRowDataToExcel(data.get(i), n, currentCellStyle, table, i);
 //            StyleUtil.buildCellBorderStyle(currentCellStyle, 0, i == 0 && !table.isNeedHead(), BorderEnum.TOP);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error("导出文档错误{}", e.getMessage());
+                return false;
+            }
         }
-
+        return true;
     }
 
 

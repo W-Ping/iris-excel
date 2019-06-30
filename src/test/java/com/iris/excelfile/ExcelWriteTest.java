@@ -30,7 +30,7 @@ public class ExcelWriteTest {
 	@Test
 	public void export2007WithTemplate() {
 		String outFilePath = "D:\\导出EXCEL";
-		String outFileName = ExcelV2007Util.generateUniqueFileNameByTime("export") + ".xlsx";
+		String outFileName = ExcelV2007Util.generateUniqueFileNameByTime("跨部门月报") + ".xlsx";
 		String outTemplate = "exportTemplateCrossDeptToMonth.xlsx";
 		String excelOutFileFullPath = outFilePath + "\\" + outFileName;
 		InputStream resourcesFileInputStream = FileUtil.getResourcesFileInputStream(outTemplate);
@@ -59,7 +59,7 @@ public class ExcelWriteTest {
 		tp2.setNeedHead(false);
 		tbList.add(tp2);
 		tableNo++;
-		Map<String, List<CrossReportModel>> mockDCCCrossReportData = TestData.mockDCCCrossReportData(10);
+		Map<String, List<CrossReportModel>> mockDCCCrossReportData = TestData.mockDCCCrossReportData(15);
 		int startRow = 10;
 		for (Map.Entry<String, List<CrossReportModel>> map : mockDCCCrossReportData.entrySet()) {
 			String key = map.getKey();
@@ -70,15 +70,14 @@ public class ExcelWriteTest {
 			gShiftRange1.setShiftNumber(groupList.size());
 			group1.setExcelShiftRange(gShiftRange1);
 			group1.setEffectExcelFormula(false);
-
-//            ExcelStyle excelStyle = new ExcelStyle();
-//            ExcelFont excelTableFont = new ExcelFont();
-//            excelTableFont.setFontHeightInPoints((short) 10);
-//            excelTableFont.setBold(true);
-//            excelTableFont.setFontColor(IndexedColors.BLUE);
-//            excelStyle.setExcelFont(excelTableFont);
-//            excelStyle.setExcelBackGroundColor(IndexedColors.GREY_25_PERCENT);
-//            group1.setTableStyle(excelStyle);
+            ExcelStyle excelStyle = new ExcelStyle();
+            ExcelFont excelTableFont = new ExcelFont();
+            excelTableFont.setFontHeightInPoints((short) 11);
+            excelTableFont.setBold(true);
+            excelTableFont.setFontColor(IndexedColors.BLUE);
+            excelStyle.setExcelFont(excelTableFont);
+            excelStyle.setExcelBackGroundColor(IndexedColors.GREY_25_PERCENT);
+            group1.setTableStyle(excelStyle);
 			tableNo++;
 			startRow += groupList.size();
 			tbList.add(group1);
@@ -101,7 +100,7 @@ public class ExcelWriteTest {
 			tableNo = tbList.get(tbList.size() - 1).getTableNo() + 1;
 		}
 
-		Map<String, List<CrossReportModel>> mockSCCrossReportData = TestData.mockSCCrossReportData(15);
+		Map<String, List<CrossReportModel>> mockSCCrossReportData = TestData.mockSCCrossReportData(30);
 		List<ExcelTable> firstScTables = new ArrayList<>();
 		for (Map.Entry<String, List<CrossReportModel>> map : mockSCCrossReportData.entrySet()) {
 			String key = map.getKey();
@@ -146,7 +145,7 @@ public class ExcelWriteTest {
 		System.out.println("startRow----:" + startRow);
 		initIndex += 6;
 		tableNo1++;
-		Map<String, List<CrossReportRateModel>> tempCrossReportRateTestModel = TestData.mockSCCrossReportRateData(15);
+		Map<String, List<CrossReportRateModel>> tempCrossReportRateTestModel = TestData.mockSCCrossReportRateData(30);
 		for (Map.Entry<String, List<CrossReportRateModel>> map : tempCrossReportRateTestModel.entrySet()) {
 			String key = map.getKey();
 			List<CrossReportRateGroupNameModel> groupList = Arrays.asList(TestData.mockGroupSCCrossReportRate(key));
@@ -186,6 +185,7 @@ public class ExcelWriteTest {
 		freezePaneRange.setRowIndex(7);
 		sheet1.setFreezePaneRange(freezePaneRange);
 		sheet1.setLocked(false);
+		sheet1.setDefaultBackGroundColor(IndexedColors.GREY_25_PERCENT);
 		List<ExcelSheet> sheets = new ArrayList<ExcelSheet>() {{
 			add(sheet1);
 		}};
@@ -226,7 +226,8 @@ public class ExcelWriteTest {
 		freezePaneRange.setRowCount(1);
 		freezePaneRange.setRowIndex(1);
 		sheet1.setFreezePaneRange(freezePaneRange);
-		sheet1.setDefaultBackGroundColor(IndexedColors.WHITE);
+		sheet1.setDefaultBackGroundColor(IndexedColors.LIGHT_BLUE);
+//		sheet1.setDefaultBackGroundColor(IndexedColors.GREY_40_PERCENT);
 		List<ExcelSheet> sheets = new ArrayList<ExcelSheet>() {{
 			add(sheet1);
 		}};

@@ -10,13 +10,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @date Created in 2019/6/25 9:55
  * @see
  */
-public class NameThreadFactory implements ThreadFactory {
+public class ExcelNameThreadFactory implements ThreadFactory {
     private static final AtomicInteger poolNumber = new AtomicInteger(1);
     private final ThreadGroup group;
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     private String namePrefix;
 
-    public NameThreadFactory(String namePrefix) {
+    public ExcelNameThreadFactory(String namePrefix) {
         SecurityManager s = System.getSecurityManager();
         group = (s != null) ? s.getThreadGroup() :
                 Thread.currentThread().getThreadGroup();
@@ -25,6 +25,11 @@ public class NameThreadFactory implements ThreadFactory {
                 "-thread-");
     }
 
+    /**
+     * @param r
+     * @return
+     */
+    @Override
     public Thread newThread(Runnable r) {
         Thread t = new Thread(group, r,
                 getNamePrefix() + threadNumber.getAndIncrement(),

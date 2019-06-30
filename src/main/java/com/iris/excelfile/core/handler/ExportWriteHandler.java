@@ -9,6 +9,7 @@ import com.iris.excelfile.metadata.ExcelSheet;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -20,30 +21,30 @@ import java.util.List;
  */
 @Slf4j
 public class ExportWriteHandler {
-    private IWriteBuilder iExcelBuilder;
+	private IWriteBuilder iWriteBuilder;
 
-    public ExportWriteHandler(InputStream tempInputStream, OutputStream outputStream, String excelOutFileFullPath, ExcelTypeEnum excelTypeEnum) {
-        this.iExcelBuilder = new WriteBuilderImpl(tempInputStream, outputStream, excelOutFileFullPath, excelTypeEnum);
-    }
+	public ExportWriteHandler(InputStream tempInputStream, OutputStream outputStream, String excelOutFileFullPath, ExcelTypeEnum excelTypeEnum) {
+		this.iWriteBuilder = new WriteBuilderImpl(tempInputStream, outputStream, excelOutFileFullPath, excelTypeEnum);
+	}
 
-    /**
-     * @param excelSheets
-     * @param isQueue
-     */
-    public void exportExcelV2007(List<ExcelSheet> excelSheets, boolean isQueue) throws ExcelException {
-        if (!CollectionUtils.isEmpty(excelSheets)) {
-            try {
-                for (ExcelSheet excelSheet : excelSheets) {
-                    excelSheet.setQueueTask(isQueue);
-                    iExcelBuilder.addContentToExcel(excelSheet);
-                }
-                iExcelBuilder.finish();
-            } catch (Exception e) {
-                e.printStackTrace();
-                log.error("数据导出IO异常{}", e.getMessage() != null ? e.getMessage() : e.toString());
-                throw new ExcelException("数据导出IO异常", e.toString());
-            }
-        }
-    }
-
+	/**
+	 * @param excelSheets
+	 * @param isQueue
+	 * @throws ExcelException
+	 */
+	public void exportExcelV2007(List<ExcelSheet> excelSheets, boolean isQueue) throws ExcelException {
+		if (!CollectionUtils.isEmpty(excelSheets)) {
+			try {
+				for (ExcelSheet excelSheet : excelSheets) {
+					iWriteBuilder.addContentToExcel(excelSheet, isQueue);
+				}
+				iWriteBuilder.flush();
+				iWriteBuilder.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				log.error("数据导出IO异常{}", e.getMessage() != null ? e.getMessage() : e.toString());
+				throw new ExcelException("数据导出IO异常", e);
+			}
+		}
+	}
 }

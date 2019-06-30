@@ -15,77 +15,109 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 /**
  *
  */
 @Slf4j
 public class ExcelV2007Util {
-    /**
-     * 加密
-     *
-     * @param outFilePath
-     * @param password
-     * @return
-     */
-    public static boolean encrypt(String outFilePath, String password) {
-        if (StringUtils.isBlank(password)) {
-            return false;
-        }
-        FileOutputStream fos = null;
-        OPCPackage opc = null;
-        try {
-            POIFSFileSystem fs = new POIFSFileSystem();
-            EncryptionInfo info = new EncryptionInfo(EncryptionMode.standard);
-            Encryptor enc = info.getEncryptor();
-            //设置密码
-            enc.confirmPassword(password);
-            //加密文件
-            opc = OPCPackage.open(new File(outFilePath), PackageAccess.READ_WRITE);
-            OutputStream os = enc.getDataStream(fs);
-            opc.save(os);
-            FileUtil.close(opc);
-            //把加密后的文件写回到流
-            fos = new FileOutputStream(outFilePath);
-            fs.writeFilesystem(fos);
-        } catch (Exception e) {
-            log.error("文档加密失败【{}】", outFilePath);
-            throw new ExcelParseException("文档加解密失败");
-        } finally {
-            FileUtil.close(null, fos);
-        }
-        return true;
-    }
+	/**
+	 * 加密
+	 *
+	 * @param outFilePath
+	 * @param password
+	 * @return
+	 */
+	public static boolean encrypt(String outFilePath, String password) {
+		if (StringUtils.isBlank(password)) {
+			return false;
+		}
+		FileOutputStream fos = null;
+		OPCPackage opc = null;
+		try {
+			POIFSFileSystem fs = new POIFSFileSystem();
+			EncryptionInfo info = new EncryptionInfo(EncryptionMode.standard);
+			Encryptor enc = info.getEncryptor();
+			//设置密码
+			enc.confirmPassword(password);
+			//加密文件
+			opc = OPCPackage.open(new File(outFilePath), PackageAccess.READ_WRITE);
+			OutputStream os = enc.getDataStream(fs);
+			opc.save(os);
+			FileUtil.close(opc);
+			//把加密后的文件写回到流
+			fos = new FileOutputStream(outFilePath);
+			fs.writeFilesystem(fos);
+		} catch (Exception e) {
+			log.error("文档加密失败【{}】", outFilePath);
+			throw new ExcelParseException("文档加解密失败");
+		} finally {
+			FileUtil.close(null, fos);
+		}
+		return true;
+	}
 
-    /**
-     * 解密
-     *
-     * @param filePath
-     * @param password
-     * @return
-     */
-    public static Workbook decrypt(String filePath, String password) {
-        Workbook wb = null;
-        FileInputStream in = null;
-        try {
-            in = new FileInputStream(filePath);
-            POIFSFileSystem poifsFileSystem = new POIFSFileSystem(in);
-            EncryptionInfo encInfo = new EncryptionInfo(poifsFileSystem);
-            Decryptor decryptor = Decryptor.getInstance(encInfo);
-            if (!decryptor.verifyPassword(password)) {
-                throw new ExcelParseException("无法处理，解密文档失败！");
-            }
-            wb = WorkBookUtil.createWorkBook(decryptor.getDataStream(poifsFileSystem), ExcelTypeEnum.XLSX);
-            //Workbook wb = WorkbookFactory.create(in, password);
-        } catch (IOException e) {
-            log.error("处理加密文档I/O异常【{}】", filePath);
-            throw new ExcelParseException("无法处理加密文档");
-        } catch (GeneralSecurityException e) {
-            log.error("无法处理加密文档【{}】", filePath);
-            throw new ExcelParseException("无法处理加密文档");
-        } finally {
-            FileUtil.close(in, null);
-        }
-        return wb;
-    }
+	/**
+	 * 解密
+	 *
+	 * @param filePath
+	 * @param password
+	 * @return
+	 */
+	public static Workbook decrypt(String filePath, String password) {
+		Workbook wb = null;
+		FileInputStream in = null;
+		try {
+			in = new FileInputStream(filePath);
+			POIFSFileSystem poifsFileSystem = new POIFSFileSystem(in);
+			EncryptionInfo encInfo = new EncryptionInfo(poifsFileSystem);
+			Decryptor decryptor = Decryptor.getInstance(encInfo);
+			if (!decryptor.verifyPassword(password)) {
+				throw new ExcelParseException("无法处理，解密文档失败！");
+			}
+			wb = WorkBookUtil.createWorkBook(decryptor.getDataStream(poifsFileSystem), ExcelTypeEnum.XLSX);
+			//Workbook wb = WorkbookFactory.create(in, password);
+		} catch (IOException e) {
+			log.error("处理加密文档I/O异常【{}】", filePath);
+			throw new ExcelParseException("无法处理加密文档");
+		} catch (GeneralSecurityException e) {
+			log.error("无法处理加密文档【{}】", filePath);
+			throw new ExcelParseException("无法处理加密文档");
+		} finally {
+			FileUtil.close(in, null);
+		}
+		return wb;
+	}
+
+	/**
+	 * 生成唯一文件名称
+	 *
+	 * @param fileName
+	 * @return
+	 */
+	public static String generateUniqueFileNameByTime(String fileName) {
+		String format = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmssSSS"));
+		if (StringUtils.isNotBlank(fileName)) {
+			format = fileName + "_" + format;
+		}
+		return format;
+	}
+
+	/**
+	 * 生成唯一文件名称
+	 *
+	 * @param fileName
+	 * @return
+	 */
+	public static String generateUniqueFileNameByUUID(String fileName) {
+		String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+		if (StringUtils.isNotBlank(fileName)) {
+			uuid = fileName + "_" + uuid;
+		}
+		return uuid;
+	}
+
 }

@@ -1,5 +1,7 @@
 package com.iris.excelfile.exception;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * @author liu_wp
  * @date Created in 2019/6/25 12:52
@@ -18,7 +20,7 @@ public class ExcelException extends Exception {
     }
 
     public ExcelException(String message, Throwable cause) {
-        super(message, cause);
+        super(message + "，【" + (StringUtils.isNotBlank(cause.getMessage()) ? cause.getMessage() : cause.toString()) + "】", cause);
     }
 
 }

@@ -41,7 +41,6 @@ public class ExportWriteHandler {
 				iWriteBuilder.flush();
 				iWriteBuilder.close();
 			} catch (IOException e) {
-				e.printStackTrace();
 				log.error("数据导出IO异常{}", e.getMessage() != null ? e.getMessage() : e.toString());
 				throw new ExcelException("数据导出IO异常", e);
 			}

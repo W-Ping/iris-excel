@@ -14,6 +14,9 @@ public class ExcelStyle {
      * 字体
      */
     private ExcelFont excelFont;
+    /**
+     * 背景颜色
+     */
     private IndexedColors excelBackGroundColor;
     /**
      * 样式

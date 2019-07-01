@@ -3,7 +3,6 @@ package com.iris.excelfile.core.builder;
 import com.iris.excelfile.constant.FileConstant;
 import com.iris.excelfile.metadata.ExcelSheet;
 import com.iris.excelfile.metadata.ExcelTable;
-import com.iris.excelfile.queue.IExcelWriteQueueTaskHandler;
 import com.iris.excelfile.queue.multitask.ExcelWriteQueueTaskHandler;
 import lombok.extern.slf4j.Slf4j;
 

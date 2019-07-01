@@ -2,7 +2,6 @@ package com.iris.excelfile.metadata;
 
 
 import com.iris.excelfile.constant.DataFormatEnum;
-import com.iris.excelfile.constant.FileConstant;
 import com.iris.excelfile.constant.TableLayoutEnum;
 import com.iris.excelfile.core.handler.extend.IWriteLoadTemplateHandler;
 import com.iris.excelfile.exception.ExcelParseException;

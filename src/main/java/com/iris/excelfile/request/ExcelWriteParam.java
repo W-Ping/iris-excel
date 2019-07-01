@@ -25,19 +25,19 @@ public class ExcelWriteParam implements Serializable {
      */
     private String excelTemplateFile;
     /**
-     * excel 导出路径
+     * excel 导出文档路径
      */
     private String excelOutFilePath;
     /**
-     * excel 文件名称
+     * excel 导出文件名称
      */
     private String excelFileName;
     /**
-     * excel 导出全路径（路径+文件名称）
+     * excel 导出文档全路径（导出文档路径+导出文件名称）
      */
     private String excelOutFileFullPath;
     /**
-     * excel 加密密码 设置有值会加密文档
+     * excel 加密文档密码
      */
     private String encryptPwd;
     /**

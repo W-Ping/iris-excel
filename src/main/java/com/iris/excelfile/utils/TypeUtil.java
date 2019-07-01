@@ -1,5 +1,6 @@
 package com.iris.excelfile.utils;
 
+import com.iris.excelfile.exception.ExcelParseException;
 import jdk.nashorn.internal.runtime.ParserException;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.beans.BeanMap;
@@ -12,6 +13,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -102,14 +104,18 @@ public class TypeUtil {
         return null;
     }
 
-    public static Boolean isIntNum(Field field) {
+    /**
+     * @param field
+     * @return
+     */
+    public static boolean isIntNum(Field field) {
         if (Integer.class.equals(field.getType()) || int.class.equals(field.getType())) {
             return true;
         }
         return false;
     }
 
-    public static Boolean isNum(Field field) {
+    public static boolean isNum(Field field) {
         if (field == null) {
             return false;
         }
@@ -131,7 +137,7 @@ public class TypeUtil {
         return false;
     }
 
-    public static Boolean isNum(Object cellValue) {
+    public static boolean isNum(Object cellValue) {
         if (cellValue instanceof Integer
                 || cellValue instanceof Double
                 || cellValue instanceof Short
@@ -143,12 +149,22 @@ public class TypeUtil {
         return false;
     }
 
+    /**
+     * @param date
+     * @return
+     */
     public static String getDefaultDateString(Date date) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return simpleDateFormat.format(date);
-
+        Instant instant = date.toInstant();
+        ZoneId zoneId = ZoneId.systemDefault();
+        LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+        return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
+    /**
+     * @param value
+     * @param format
+     * @return
+     */
     public static Date getSimpleDateFormatDate(String value, String format) {
         if (!StringUtils.isEmpty(value)) {
             Date date = null;
@@ -170,7 +186,6 @@ public class TypeUtil {
                     break;
                 }
             }
-
             return date;
 
         }
@@ -179,6 +194,10 @@ public class TypeUtil {
     }
 
 
+    /**
+     * @param value
+     * @return
+     */
     public static String formatFloat(String value) {
         if (null != value && value.contains(".")) {
             if (isNumeric(value)) {
@@ -187,7 +206,8 @@ public class TypeUtil {
                     BigDecimal setScale = decimal.setScale(10, BigDecimal.ROUND_HALF_DOWN).stripTrailingZeros();
                     return setScale.toPlainString();
                 } catch (Exception e) {
-                    log.error("float transform error,{}", e.getMessage());
+                    log.error("{} string cast to float error", value);
+                    throw new ExcelParseException(value + " string cast to float error");
                 }
             }
         }
@@ -202,7 +222,8 @@ public class TypeUtil {
                     BigDecimal setScale = decimal.setScale(n, BigDecimal.ROUND_HALF_DOWN);
                     return setScale.toPlainString();
                 } catch (Exception e) {
-                    log.error("float transform error,{}", e.getMessage());
+                    log.error("{} string cast to float error", value);
+                    throw new ExcelParseException(value + " string cast to float error");
                 }
             }
         }
@@ -226,8 +247,8 @@ public class TypeUtil {
             LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
             return formatLocalDateTime(localDateTime, format);
         } catch (Exception e) {
-            log.error("日期时间格式化错误,{}", e.getMessage());
-            throw new ParserException("日期时间格式化错误【" + cellValue + "】");
+            log.error("{} date format error", cellValue);
+            throw new ExcelParseException(cellValue + " date format error");
         }
     }
 
@@ -235,8 +256,8 @@ public class TypeUtil {
         try {
             return formatLocalDateTime(dateStrToLocalDateTime(cellValue), format);
         } catch (Exception e) {
-            log.error("日期时间格式化错误,{}", e.getMessage());
-            throw new ParserException("日期时间格式化错误【" + cellValue + "】");
+            log.error("{} date format error", cellValue);
+            throw new ExcelParseException(cellValue + " date format error");
         }
     }
 

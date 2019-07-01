@@ -12,7 +12,13 @@ import java.util.List;
 public class ExcelColumnProperty extends BaseColumnProperty {
 
     private Field field;
+    /**
+     * 忽略列
+     */
     private boolean ignoreField;
+    /**
+     * 索引
+     */
     private int index = 99999;
     /**
      * 合并列索引
@@ -47,6 +53,9 @@ public class ExcelColumnProperty extends BaseColumnProperty {
      */
     private boolean isSeqNo;
 
+    /**
+     * 保留模板样式
+     */
     private boolean keepTpStyle;
 
     public ExcelColumnProperty() {

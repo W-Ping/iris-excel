@@ -2,8 +2,8 @@ package com.iris.excelfile;
 
 import com.iris.excelfile.constant.DataFormatEnum;
 import com.iris.excelfile.constant.FileConstant;
-import com.iris.excelfile.data.DictionaryData;
-import com.iris.excelfile.data.DictionaryData2;
+import com.iris.excelfile.data.AbstractDictionaryData;
+import com.iris.excelfile.data.AbstractDictionaryData2;
 import com.iris.excelfile.data.TemplateDic;
 import com.iris.excelfile.data.TestData;
 import com.iris.excelfile.handler.*;
@@ -43,7 +43,7 @@ public class ExcelWriteTest {
 		tp.setNeedHead(false);
 		tp.setTableName("第一个表");
 		tp.setWriteBeforeHandler(new CrossTeamWriteBeforeHandlerImpl());
-		tp.setDictionaryRefHandler(new DictionaryData());
+		tp.setDictionaryRefHandler(new AbstractDictionaryData());
 //        tp.setTableDataDefaultFormat(DataFormatEnum.NUMBER_2_CURRENCY_US);
 		tbList.add(tp);
 		tableNo++;
@@ -90,7 +90,7 @@ public class ExcelWriteTest {
 			shiftRange1.setShiftNumber(value.size());
 			excelTable1.setExcelShiftRange(shiftRange1);
 			excelTable1.setWriteBeforeHandler(new CrossDccWriteBeforeHandlerImpl());
-			excelTable1.setDictionaryRefHandler(new DictionaryData2());
+			excelTable1.setDictionaryRefHandler(new AbstractDictionaryData2());
 			startRow += value.size();
 			tableNo++;
 			tbList.add(excelTable1);
@@ -206,8 +206,8 @@ public class ExcelWriteTest {
 	@Test
 	public void export2007WithQueueTemplate() {
 		List<ExcelTable> tableList = new ArrayList<>();
-		for (int i = 1; i <= 2000; i++) {
-			List<TemplateModel> list = TestData.mockTemplateModel(200);
+		for (int i = 1; i <= 100; i++) {
+			List<TemplateModel> list = TestData.mockTemplateModel(20);
 			ExcelTable tp = new ExcelTable(i, null, TemplateModel.class, list);
 			if (i == 1) {
 				tp.setFirstRowIndex(1);

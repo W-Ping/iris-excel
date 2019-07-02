@@ -34,6 +34,7 @@ public class LogRejectedExecutionHandler implements RejectedExecutionHandler {
         if (iWriteBuilder != null) {
             outFilePath = iWriteBuilder.getOutFilePath();
         }
-        log.info("导出{}，任务【" + r.toString() + "】执行被拒绝", outFilePath);
+
+        log.info("{} 导出{}，任务【{}】执行被拒绝", Thread.currentThread().getName(), outFilePath, r.toString());
     }
 }

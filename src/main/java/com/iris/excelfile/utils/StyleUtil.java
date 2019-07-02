@@ -22,10 +22,21 @@ import java.util.Map;
 public class StyleUtil {
 
     private static CellStyle fieldNullCellStyle = null;
-    private static Map<Integer, CellStyle> defaultContentCellStyle = new HashMap<>();
-    private static Map<Integer, CellStyle> defaultHeadStyle = new HashMap<>();
-    private static Map<Integer, CellStyle> defaultFootCellStyle = new HashMap<>();
+    public static Map<Integer, CellStyle> defaultContentCellStyle = new HashMap<>();
+    public static Map<Integer, CellStyle> defaultHeadStyle = new HashMap<>();
+    public static Map<Integer, CellStyle> defaultFootCellStyle = new HashMap<>();
 
+
+    /**
+     * 清空样式缓存 避免错误
+     * this Style does not belong to the supplied Workbook Stlyes Source
+     */
+    public static void clearDefaultStyleCache() {
+        fieldNullCellStyle = null;
+        defaultContentCellStyle.clear();
+        defaultHeadStyle.clear();
+        defaultFootCellStyle.clear();
+    }
 
     /**
      * 表头默认样式

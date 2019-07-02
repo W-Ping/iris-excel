@@ -60,9 +60,8 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
      */
     @Override
     public void initSheet(ExcelSheet excelSheet) {
-        context.currentSheet(excelSheet);
-        //TODO 多线程导出有跨行要修改
         this.clearCache();
+        context.currentSheet(excelSheet);
     }
 
     /**
@@ -81,7 +80,6 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
      */
     @Override
     public void addContentBefore(ExcelTable table) {
-        this.clearCache();
         this.initDataContent(table);
     }
 
@@ -102,7 +100,7 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
             return true;
         } catch (Exception e) {
             log.error("excel 加载数据失败 {}", e.getMessage());
-            return false;
+            throw new ExcelParseException("excel 加载数据失败", e);
         }
     }
 
@@ -157,6 +155,7 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
             }
         }
         table.setStartContentRowIndex(startRow);
+        tableStyle.setCurrentCellStyle(currentCellStyle);
         table.setTableStyle(tableStyle);
     }
 
@@ -333,6 +332,9 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
 
     @Override
     public void clearCache() {
+        //清空默认样式缓存
+        StyleUtil.clearDefaultStyleCache();
+        //TODO 多线程导出有跨行要修改
         mergeRowIndexMap.clear();
     }
 

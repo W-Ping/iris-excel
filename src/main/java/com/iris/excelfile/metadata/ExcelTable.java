@@ -3,7 +3,7 @@ package com.iris.excelfile.metadata;
 
 import com.iris.excelfile.constant.DataFormatEnum;
 import com.iris.excelfile.constant.TableLayoutEnum;
-import com.iris.excelfile.core.handler.extend.DictionaryRefHandler;
+import com.iris.excelfile.core.handler.extend.AbstractDictionaryRefHandler;
 import com.iris.excelfile.core.handler.extend.IWriteAfterHandler;
 import com.iris.excelfile.core.handler.extend.IWriteBeforeHandler;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -65,7 +65,7 @@ public class ExcelTable<T> implements Comparable<ExcelTable> {
 	/**
 	 * 字典映射handler
 	 */
-	private DictionaryRefHandler dictionaryRefHandler;
+	private AbstractDictionaryRefHandler dictionaryRefHandler;
 	/**
 	 * 模板移动范围 布局优先
 	 */
@@ -330,11 +330,11 @@ public class ExcelTable<T> implements Comparable<ExcelTable> {
 		this.heightInPoints = heightInPoints;
 	}
 
-	public DictionaryRefHandler getDictionaryRefHandler() {
+	public AbstractDictionaryRefHandler getDictionaryRefHandler() {
 		return dictionaryRefHandler;
 	}
 
-	public void setDictionaryRefHandler(DictionaryRefHandler dictionaryRefHandler) {
+	public void setDictionaryRefHandler(AbstractDictionaryRefHandler dictionaryRefHandler) {
 		this.dictionaryRefHandler = dictionaryRefHandler;
 	}
 

@@ -32,8 +32,8 @@ public class ExcelWriteQueueTaskHandler implements IExcelWriteQueueTaskHandler<E
         this.iWriteBuilder = iWriteBuilder;
         this.countDownLatch = new CountDownLatch(this.threadMaxCount);
         //线程池初始化
-        threadPoolExecutor = new ThreadPoolExecutor(this.threadMaxCount + FileConstant.MAX_THREAD_COUNT, this.threadMaxCount + FileConstant.MAX_THREAD_COUNT * 2, 0L, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(FileConstant.MAX_THREAD_COUNT), new ExcelNameThreadFactory(FileConstant.EXPORT_THREAD_PREFIX_NAME), new LogRejectedExecutionHandler(iWriteBuilder));
+        threadPoolExecutor = new ThreadPoolExecutor(this.threadMaxCount, FileConstant.MAX_THREAD_COUNT, 0L, TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(tableSize), new ExcelNameThreadFactory(FileConstant.EXPORT_THREAD_PREFIX_NAME), new LogRejectedExecutionHandler(iWriteBuilder));
     }
 
     /**

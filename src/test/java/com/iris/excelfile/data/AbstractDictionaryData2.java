@@ -1,8 +1,8 @@
 package com.iris.excelfile.data;
 
-import com.iris.excelfile.core.handler.extend.DictionaryRefHandler;
+import com.iris.excelfile.core.handler.extend.AbstractDictionaryRefHandler;
 
-public class DictionaryData2 extends DictionaryRefHandler {
+public class AbstractDictionaryData2 extends AbstractDictionaryRefHandler {
     /**
      * @param i
      * @param code

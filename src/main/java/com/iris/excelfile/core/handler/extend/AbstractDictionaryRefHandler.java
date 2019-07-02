@@ -7,7 +7,7 @@ import java.util.function.Function;
 /**
  * @author lwp
  */
-public abstract class DictionaryRefHandler implements BiFunction<Integer, Integer, String> {
+public abstract class AbstractDictionaryRefHandler implements BiFunction<Integer, Integer, String> {
 
     @Override
     public String apply(Integer t, Integer u) {

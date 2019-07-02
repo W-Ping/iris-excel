@@ -15,7 +15,12 @@ import java.io.InputStream;
 
 public class WorkBookUtil {
 
-
+    /**
+     * @param templateInputStream
+     * @param excelType
+     * @return
+     * @throws IOException
+     */
     public static Workbook createWorkBook(InputStream templateInputStream, ExcelTypeEnum excelType) throws IOException {
         Workbook workbook;
         if (ExcelTypeEnum.XLS.equals(excelType)) {
@@ -26,19 +31,6 @@ public class WorkBookUtil {
 //                    new XSSFWorkbook(templateInputStream));
             workbook = (templateInputStream == null) ? new SXSSFWorkbook(500) :
                     new XSSFWorkbook(templateInputStream);
-        }
-        return workbook;
-    }
-
-    public static Workbook createWorkBookWithStream(InputStream inputStream, ExcelTypeEnum excelType) throws IOException {
-        if (inputStream == null) {
-            throw new IOException("inputStream is null");
-        }
-        Workbook workbook;
-        if (ExcelTypeEnum.XLS.equals(excelType)) {
-            workbook = new HSSFWorkbook(inputStream);
-        } else {
-            workbook = new XSSFWorkbook(inputStream);
         }
         return workbook;
     }
@@ -57,18 +49,18 @@ public class WorkBookUtil {
     }
 
     public static Row createOrGetRow(Sheet sheet, int rowNum) {
-//		synchronized (Object.class) {
-        Row row = null;
-        try {
-            row = sheet.getRow(rowNum);
-            if (row == null) {
+        synchronized (Object.class) {
+            Row row = null;
+            try {
+                row = sheet.getRow(rowNum);
+                if (row == null) {
+                    row = sheet.createRow(rowNum);
+                }
+            } catch (Exception e) {
                 row = sheet.createRow(rowNum);
             }
-        } catch (Exception e) {
-            row = sheet.createRow(rowNum);
+            return row;
         }
-        return row;
-//		}
     }
 
     public static Row createRow(Sheet sheet, int rowNum) {

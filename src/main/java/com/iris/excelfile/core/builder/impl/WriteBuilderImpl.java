@@ -174,7 +174,6 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
         if (excelTable.getWriteAfterHandler() != null) {
             excelTable.getWriteAfterHandler().row(n, row);
         }
-        //
         if (oneRowData instanceof List) {
             addListTypeToExcel((List) oneRowData, row, cellStyle, excelTable, i);
         } else {

@@ -69,8 +69,8 @@ public class ExcelWriteQueueTaskHandler implements IExcelWriteQueueTaskHandler<E
             long start = System.currentTimeMillis();
             log.info("开始执行多线程导出{}", start);
             BaseResponse response = new BaseResponse();
+            ExcelWriteTask excelWriteTask = new ExcelWriteTask(response, EXCEL_TABLES_QUEUE, countDownLatch, iWriteBuilder);
             for (int i = 0; i < threadMaxCount; i++) {
-                ExcelWriteTask excelWriteTask = new ExcelWriteTask(response, EXCEL_TABLES_QUEUE, countDownLatch, iWriteBuilder);
                 FutureTask<BaseResponse> futureTask = new FutureTask<>(excelWriteTask);
                 threadPoolExecutor.submit(futureTask, response);
             }

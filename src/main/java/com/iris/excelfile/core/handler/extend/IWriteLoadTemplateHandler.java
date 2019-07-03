@@ -11,7 +11,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 public interface IWriteLoadTemplateHandler {
 
     /**
-     * @param sheet
+     * @param workbook
+     * @param sheet    加载的当前sheet
      */
     void beforeLoadTemplate(Workbook workbook, Sheet sheet);
 }

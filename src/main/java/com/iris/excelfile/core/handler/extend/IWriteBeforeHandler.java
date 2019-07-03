@@ -17,16 +17,16 @@ public interface IWriteBeforeHandler {
      * 自定义设置列样式
      *
      * @param workbook
-     * @param dataFormat
+     * @param dataFormat 默认表格的数字格式
      * @return
      */
     Map<Integer, CellStyle> customSetCellStyle(Workbook workbook, short dataFormat);
-    
+
     /**
      * 清空列值
      *
-     * @param row
-     * @param cellIndex
+     * @param row       行
+     * @param cellIndex 列索引
      * @return
      */
     boolean clearCellValue(Row row, int cellIndex);

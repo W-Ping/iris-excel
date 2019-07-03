@@ -45,7 +45,6 @@ public class ExcelHeadProperty {
         if (headClazz != null) {
             List<Field> objectField = FieldUtil.getObjectField(headClazz);
             if (!CollectionUtils.isEmpty(objectField)) {
-                List<ExcelColumnProperty> list = new ArrayList<>();
                 for (Field f : objectField) {
                     ExcelColumnProperty excelColumnProperty = FieldUtil.annotationToObject(f, ExcelColumnProperty.class);
                     if (excelColumnProperty != null) {

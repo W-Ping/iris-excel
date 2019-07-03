@@ -1,7 +1,9 @@
 package com.iris.excelfile.constant;
 
+import com.iris.excelfile.exception.ExcelParseException;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,7 +70,11 @@ public enum ExcelFormula {
                 //拼接格式：SUM(AD8,Z8,V8,R8,N8,J8,F8,B8)
                 value = list.stream().collect(Collectors.joining(row + ",", "SUM(", row + ")"));
             } else if (ExcelFormula.DIVISION.equals(excelFormula)) {
-                String[] split = ((String) object).split("\\/");
+                value = (String) object;
+                if (value.indexOf("/") < 0 || value.startsWith("/") || value.endsWith("/")) {
+                    throw new ExcelParseException("divideCellFormula value format is error");
+                }
+                String[] split = value.split("\\/");
                 //拼接格式：B1/E1
                 value = Arrays.stream(split).collect(Collectors.joining(row + "/", "", row + ""));
             }

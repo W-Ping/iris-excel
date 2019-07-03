@@ -4,7 +4,7 @@ import java.lang.annotation.*;
 
 /**
  * 写入Excel注解
- * 优先级别 ignore>isSeqNo>keepTpStyle> sumCellFormula >divideCellFormula
+ * 优先级别 ignoreCell>isSeqNo> sumCellFormula >divideCellFormula
  *
  * @author liu_wp
  * @date Created in 2019/3/5 10:46
@@ -44,6 +44,13 @@ public @interface ExcelWriteProperty {
     int mergeRowCount() default 0;
 
     /**
+     * 忽略当前列
+     *
+     * @return
+     */
+    boolean ignoreCell() default false;
+
+    /**
      * 是否为序列号
      *
      * @return
@@ -65,12 +72,6 @@ public @interface ExcelWriteProperty {
      */
     String divideCellFormula() default "";
 
-    /**
-     * 忽略当前列
-     *
-     * @return
-     */
-    boolean ignore() default false;
 
     /**
      * 日期格式
@@ -78,12 +79,5 @@ public @interface ExcelWriteProperty {
      * @return
      */
     String dateFormat() default "";
-
-    /**
-     * 是否保持模板样式
-     *
-     * @return
-     */
-    boolean keepTpStyle() default false;
 
 }

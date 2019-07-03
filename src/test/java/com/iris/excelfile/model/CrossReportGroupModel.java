@@ -12,6 +12,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class CrossReportGroupModel extends CrossReportModel {
-    @ExcelWriteProperty(index = 0, ignore = true)
+    @ExcelWriteProperty(index = 0, ignoreCell = true)
     private String empCode;
 }

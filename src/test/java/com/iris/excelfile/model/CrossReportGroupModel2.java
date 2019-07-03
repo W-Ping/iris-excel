@@ -14,26 +14,26 @@ import java.math.BigDecimal;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class CrossReportGroupModel2 extends CrossReportModel {
-    @ExcelWriteProperty(index = 0, ignore = true)
+    @ExcelWriteProperty(index = 0, ignoreCell = true)
     private String empCode;
-    @ExcelWriteProperty(index = 47, keepTpStyle = true)
+    @ExcelWriteProperty(index = 47, ignoreCell = true)
     private Integer financialCountTargetValue;
-    @ExcelWriteProperty(index = 48, keepTpStyle = true)
+    @ExcelWriteProperty(index = 48, ignoreCell = true)
     private Integer financialCountActualValue;
-    @ExcelWriteProperty(index = 49, keepTpStyle = true)
+    @ExcelWriteProperty(index = 49, ignoreCell = true)
     private Integer insuranceCountTargetValue;
-    @ExcelWriteProperty(index = 50, keepTpStyle = true)
+    @ExcelWriteProperty(index = 50, ignoreCell = true)
     private Integer insuranceCountActualValue;
-    @ExcelWriteProperty(index = 51, keepTpStyle = true)
+    @ExcelWriteProperty(index = 51, ignoreCell = true)
     private BigDecimal skuGoodsAmountTargetValue;
-    @ExcelWriteProperty(index = 52, keepTpStyle = true)
+    @ExcelWriteProperty(index = 52, ignoreCell = true)
     private BigDecimal skuGoodsAmountActualValue;
-    @ExcelWriteProperty(index = 53, keepTpStyle = true)
+    @ExcelWriteProperty(index = 53, ignoreCell = true)
     private Integer extendWarrantyCountTargetValue;
-    @ExcelWriteProperty(index = 54, keepTpStyle = true)
+    @ExcelWriteProperty(index = 54, ignoreCell = true)
     private Integer extendWarrantyCountActualValue;
-    @ExcelWriteProperty(index = 55, keepTpStyle = true)
+    @ExcelWriteProperty(index = 55, ignoreCell = true)
     private Integer otherCountTargetValue;
-    @ExcelWriteProperty(index = 56, keepTpStyle = true)
+    @ExcelWriteProperty(index = 56, ignoreCell = true)
     private Integer otherCountActualValue;
 }

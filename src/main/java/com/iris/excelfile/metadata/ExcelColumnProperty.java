@@ -15,7 +15,7 @@ public class ExcelColumnProperty extends BaseColumnProperty {
     /**
      * 忽略列
      */
-    private boolean ignoreField;
+    private boolean ignoreCell;
     /**
      * 索引
      */
@@ -53,10 +53,6 @@ public class ExcelColumnProperty extends BaseColumnProperty {
      */
     private boolean isSeqNo;
 
-    /**
-     * 保留模板样式
-     */
-    private boolean keepTpStyle;
 
     public ExcelColumnProperty() {
     }
@@ -66,21 +62,20 @@ public class ExcelColumnProperty extends BaseColumnProperty {
     }
 
     public ExcelColumnProperty(Field field, int index, List<String> head, String dateFormat, String divideCellFormula, List<String> sumCellFormula) {
-        this(field, index, head, false, false, null, 0, dateFormat, divideCellFormula, sumCellFormula, false);
+        this(field, index, head, false, false, null, 0, dateFormat, divideCellFormula, sumCellFormula);
     }
 
-    public ExcelColumnProperty(Field field, int index, List<String> head, boolean isSeqNo, boolean ignoreField, Integer mergeCellIndex, int mergeRowCount, String dateFormat, String divideCellFormula, List<String> sumCellFormula, boolean keepTpStyle) {
+    public ExcelColumnProperty(Field field, int index, List<String> head, boolean isSeqNo, boolean ignoreCell, Integer mergeCellIndex, int mergeRowCount, String dateFormat, String divideCellFormula, List<String> sumCellFormula) {
         this.field = field;
         this.index = index;
         this.head = head;
         this.isSeqNo = isSeqNo;
-        this.ignoreField = ignoreField;
+        this.ignoreCell = ignoreCell;
         this.mergeCellIndex = mergeCellIndex;
         this.mergeRowCount = mergeRowCount;
         this.dateFormat = dateFormat;
         this.divideCellFormula = divideCellFormula;
         this.sumCellFormula = sumCellFormula;
-        this.keepTpStyle = keepTpStyle;
     }
 
     public Field getField() {
@@ -115,12 +110,12 @@ public class ExcelColumnProperty extends BaseColumnProperty {
         this.sumCellFormula = sumCellFormula;
     }
 
-    public boolean isIgnoreField() {
-        return ignoreField;
+    public boolean isIgnoreCell() {
+        return ignoreCell;
     }
 
-    public void setIgnoreField(boolean ignoreField) {
-        this.ignoreField = ignoreField;
+    public void setIgnoreCell(boolean ignoreCell) {
+        this.ignoreCell = ignoreCell;
     }
 
     public Integer getMergeCellIndex() {
@@ -166,13 +161,6 @@ public class ExcelColumnProperty extends BaseColumnProperty {
         this.multiCellFormula = multiCellFormula;
     }
 
-    public boolean isKeepTpStyle() {
-        return keepTpStyle;
-    }
-
-    public void setKeepTpStyle(boolean keepTpStyle) {
-        this.keepTpStyle = keepTpStyle;
-    }
 
     @Override
     public int compareTo(ExcelColumnProperty o) {

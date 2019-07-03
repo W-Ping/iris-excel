@@ -75,31 +75,28 @@ public class WorkBookUtil {
         return workbook.createSheet(excelSheet.getSheetName() != null ? excelSheet.getSheetName() : excelSheet.getSheetNo() + "");
     }
 
-    public static Cell createCell(Sheet sheet, Row row, int colNum, CellStyle cellStyle, Object cellValue, Boolean isNum, Boolean isFormula, boolean keepTpStyle, boolean isSeqNo) {
-        Cell cell = null;
-        if (!keepTpStyle || isSeqNo) {
-            cell = row.createCell(colNum);
+    public static Cell createCell(Row row, int colNum, CellStyle cellStyle, Object cellValue, Boolean isNum, Boolean isFormula, boolean isSeqNo) {
+        Cell cell = row.createCell(colNum);
+        if (cell != null) {
             cell.setCellStyle(cellStyle);
-        } else if (sheet != null) {
-            cell = sheet.getRow(row.getRowNum()).getCell(colNum);
-        }
-        if (null != cellValue && cell != null) {
-            if (isFormula) {
-                cell.setCellFormula(cellValue.toString());
-            } else {
-                if (isNum && !isSeqNo) {
-                    cell.setCellValue(Double.parseDouble(cellValue.toString()));
+            if (null != cellValue) {
+                if (isFormula) {
+                    cell.setCellFormula(cellValue.toString());
                 } else {
-                    cell.setCellValue(cellValue.toString());
+                    if (isNum && !isSeqNo) {
+                        cell.setCellValue(Double.parseDouble(cellValue.toString()));
+                    } else {
+                        cell.setCellValue(cellValue.toString());
+                    }
                 }
             }
         }
         return cell;
     }
 
-    public static Cell createCell(Row row, int colNum, CellStyle cellStyle, Object cellValue, Boolean isNum, Boolean isFormula, boolean isSeqNo) {
-        return createCell(null, row, colNum, cellStyle, cellValue, isNum, isFormula, false, isSeqNo);
-    }
+//    public static Cell createCell(Row row, int colNum, CellStyle cellStyle, Object cellValue, Boolean isNum, Boolean isFormula, boolean isSeqNo) {
+//        return createCell(row, colNum, cellStyle, cellValue, isNum, isFormula, isSeqNo);
+//    }
 
 
 }

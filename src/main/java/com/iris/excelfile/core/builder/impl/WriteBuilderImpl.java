@@ -227,24 +227,20 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
             String cellValue = null;
             CellStyle fieldIsNullStyle = null;
             boolean isSeqNo = false;
-            boolean keepTpStyle = false;
             int lastIndex = columnPropertyList.size() - 1;
-
             for (int i = 0; i < columnPropertyList.size(); i++) {
                 ExcelColumnProperty excelColumnProperty = columnPropertyList.get(i);
-                if (excelColumnProperty == null || excelColumnProperty.isIgnoreField()) {
+                if (excelColumnProperty == null || excelColumnProperty.isIgnoreCell()) {
                     continue;
                 }
                 StyleUtil.buildCellBorderStyle(cellStyle, 0, 0 == i, BorderEnum.LEFT);
                 StyleUtil.buildCellBorderStyle(cellStyle, lastIndex, lastIndex == i, BorderEnum.RIGHT);
-
                 CellStyle cellStyle1 = cellStyle;
                 Map<Integer, CellStyle> cellStyleMap = excelTable.getCellStyleMap();
                 if (null != cellStyleMap && null != cellStyleMap.get(i + startCellIndex)) {
                     cellStyle1 = cellStyleMap.get(i + startCellIndex);
                 }
                 isSeqNo = excelColumnProperty.isSeqNo();
-                keepTpStyle = excelColumnProperty.isKeepTpStyle();
                 String dicValue = null;
                 //合并行和合并列
                 mergeCellIndex = excelColumnProperty.getMergeCellIndex();
@@ -278,10 +274,7 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
                     dateFormat = excelColumnProperty.getDateFormat();
                     //使用SUM和divide计算公式
                     isFormula = !CollectionUtils.isEmpty(sumCellFormula) || StringUtils.isNotBlank(divideCellFormula);
-                    if (keepTpStyle) {
-                        cellValue = TypeUtil.getFieldStringValue(beanMap, excelColumnProperty.getField().getName(),
-                                dateFormat);
-                    } else if (excelTable.isEffectExcelFormula() && isFormula) {
+                    if (excelTable.isEffectExcelFormula() && isFormula) {
                         if (!CollectionUtils.isEmpty(sumCellFormula)) {
                             cellValue = ExcelFormula.assemblyExcelFormula(row.getRowNum() + 1, sumCellFormula, ExcelFormula.ADDITION);
                         } else if (StringUtils.isNotBlank(divideCellFormula)) {
@@ -315,9 +308,9 @@ public class WriteBuilderImpl extends AbstractWriteBuilder {
                         cellStyle1 = fieldIsNullStyle;
                     }
                 }
-                Cell cell = WorkBookUtil.createCell(context.getCurrentSheet(), row, i + startCellIndex, cellStyle1, cellValue,
+                Cell cell = WorkBookUtil.createCell(row, i + startCellIndex, cellStyle1, cellValue,
                         cellValue != null && !isFormula && StringUtils.isBlank(dicValue)
-                                ? TypeUtil.isNum(excelColumnProperty.getField()) : false, isFormula, keepTpStyle, isSeqNo);
+                                ? TypeUtil.isNum(excelColumnProperty.getField()) : false, isFormula, isSeqNo);
                 if (excelTable.getWriteAfterHandler() != null) {
                     excelTable.getWriteAfterHandler().cell(i, cell);
                 }

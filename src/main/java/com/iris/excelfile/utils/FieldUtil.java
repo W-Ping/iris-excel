@@ -33,18 +33,17 @@ public class FieldUtil {
             ExcelWriteProperty annotation = field.getAnnotation(ExcelWriteProperty.class);
             if (null != annotation && null != tClass) {
                 String[] headValue = annotation.head();
-                boolean ignore = annotation.ignore();
+                boolean ignoreCell = annotation.ignoreCell();
                 int mergeCellIndex = annotation.mergeCellIndex();
                 int mergeRowCount = annotation.mergeRowCount();
                 String divideCellFormula = annotation.divideCellFormula();
                 String[] sumCellFormula = annotation.sumCellFormula();
                 String dateFormat = annotation.dateFormat();
                 boolean isSeqNo = annotation.isSeqNo();
-                boolean keepTpStyle = annotation.keepTpStyle();
-                Class<?>[] fieldClass = {Field.class, int.class, List.class, boolean.class, boolean.class, Integer.class, int.class, String.class, String.class, List.class, boolean.class};
+                Class<?>[] fieldClass = {Field.class, int.class, List.class, boolean.class, boolean.class, Integer.class, int.class, String.class, String.class, List.class};
                 Object[] fieldValue = {field, annotation.index(),
-                        Arrays.asList(headValue), isSeqNo, ignore, mergeCellIndex >= 0 ? mergeCellIndex : null,
-                        mergeRowCount < 0 ? 0 : mergeRowCount, dateFormat, divideCellFormula, Arrays.asList(sumCellFormula), keepTpStyle};
+                        Arrays.asList(headValue), isSeqNo, ignoreCell, mergeCellIndex >= 0 ? mergeCellIndex : null,
+                        mergeRowCount < 0 ? 0 : mergeRowCount, dateFormat, divideCellFormula, Arrays.asList(sumCellFormula)};
                 Constructor<T> constructor = tClass.getDeclaredConstructor(fieldClass);
                 t = constructor.newInstance(fieldValue);
             }

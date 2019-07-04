@@ -29,16 +29,16 @@ public class FileUtil {
      * @return
      * @throws IOException
      */
-    public static synchronized OutputStream synGetResourcesFileOutputStream(String filePath, String fileName) throws IOException {
+    public static synchronized void synMkdirs(String filePath) {
         File file = new File(fileReplacePath(filePath));
         if (!file.exists()) {
             file.mkdirs();
         }
-        file = new File(fileReplacePath(filePath + "/" + fileName));
-        return new FileOutputStream(file);
     }
 
     public static synchronized OutputStream synGetResourcesFileOutputStream(String excelOutFileFullPath) throws IOException {
+        String fileDir = excelOutFileFullPath.substring(0, excelOutFileFullPath.lastIndexOf("/"));
+        synMkdirs(fileDir);
         File file = new File(fileReplacePath(excelOutFileFullPath));
         if (!file.exists() && file.isFile()) {
             file.createNewFile();

@@ -38,8 +38,10 @@ public class FileUtil {
     }
 
     public static synchronized OutputStream synGetResourcesFileOutputStream(String excelOutFileFullPath) throws IOException {
-        String fileDir = excelOutFileFullPath.substring(0, excelOutFileFullPath.lastIndexOf("/"));
-        synMkdirs(fileDir);
+        String fileDir = getFileDir(excelOutFileFullPath);
+        if (fileDir != null) {
+            synMkdirs(fileDir);
+        }
         File file = new File(fileReplacePath(excelOutFileFullPath));
         if (!file.exists() && file.isFile()) {
             file.createNewFile();

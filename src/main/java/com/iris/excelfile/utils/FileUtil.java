@@ -3,6 +3,7 @@ package com.iris.excelfile.utils;
 import com.iris.excelfile.constant.ExcelTypeEnum;
 import com.iris.excelfile.exception.ExcelParseException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 
 import java.io.*;
@@ -61,6 +62,45 @@ public class FileUtil {
     }
 
     /**
+     * @param filePath
+     * @return
+     */
+    public static String getFileDir(String filePath) {
+        if (StringUtils.isNotBlank(filePath)) {
+            String pathSplit = "\\";
+            String os = System.getProperty("os.name");
+            if (os.toLowerCase().indexOf("windows") < 0) {
+                pathSplit = "/";
+            }
+            if (filePath.indexOf(pathSplit) >= 0) {
+                String fileDir = filePath.substring(0, filePath.lastIndexOf(pathSplit));
+                return fileDir;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param filePath
+     * @return
+     */
+    public static String getFileName(String filePath) {
+        if (StringUtils.isNotBlank(filePath)) {
+            String pathSplit = "\\";
+            String os = System.getProperty("os.name");
+            if (os.toLowerCase().indexOf("windows") < 0) {
+                pathSplit = "/";
+            }
+            if (filePath.indexOf(pathSplit) >= 0) {
+                String fileName = filePath.substring(filePath.lastIndexOf(pathSplit) + 1, filePath.length());
+                return fileName;
+            }
+        }
+        return null;
+    }
+
+
+    /**
      * @param inputStream
      * @param outputStream
      */
@@ -105,7 +145,6 @@ public class FileUtil {
      * @return
      */
     public static String createTempDirectory() {
-
         String tmpDir = System.getProperty(JAVA_IO_TMPDIR);
         if (tmpDir == null) {
             throw new ExcelParseException(

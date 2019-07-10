@@ -88,6 +88,14 @@ public class ExcelWriteParam implements Serializable {
     }
 
     public void setExcelOutFileFullPath(String excelOutFileFullPath) {
+        if (StringUtils.isNotBlank(excelOutFileFullPath)) {
+            if (StringUtils.isBlank(this.excelOutFilePath)) {
+                setExcelOutFilePath(FileUtil.getFileDir(excelOutFileFullPath));
+            }
+            if (StringUtils.isBlank(this.excelFileName)) {
+                setExcelFileName(FileUtil.getFileName(excelOutFileFullPath));
+            }
+        }
         this.excelOutFileFullPath = excelOutFileFullPath;
     }
 

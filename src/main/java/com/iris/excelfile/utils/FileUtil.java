@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- *
  * @author lwp
  */
 @Slf4j
@@ -92,8 +91,7 @@ public class FileUtil {
 				pathSplit = "/";
 			}
 			if (filePath.indexOf(pathSplit) >= 0) {
-				String fileName = filePath.substring(filePath.lastIndexOf(pathSplit) + 1, filePath.length());
-				return fileName;
+				return filePath.substring(filePath.lastIndexOf(pathSplit) + 1, filePath.length());
 			}
 		}
 		return null;

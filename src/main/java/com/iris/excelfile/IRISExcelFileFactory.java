@@ -2,21 +2,27 @@ package com.iris.excelfile;
 
 import com.iris.excelfile.constant.ExcelTypeEnum;
 import com.iris.excelfile.constant.FileConstant;
+import com.iris.excelfile.core.handler.ExcelReadHandler;
 import com.iris.excelfile.core.handler.ExportWriteHandler;
+import com.iris.excelfile.exception.ExcelParseException;
 import com.iris.excelfile.metadata.ExcelSheet;
 import com.iris.excelfile.metadata.ExcelTable;
+import com.iris.excelfile.request.ExcelReadParam;
 import com.iris.excelfile.request.ExcelWriteParam;
+import com.iris.excelfile.response.ExcelReadResponse;
 import com.iris.excelfile.response.ExcelWriteResponse;
 import com.iris.excelfile.utils.ExcelV2007Util;
 import com.iris.excelfile.utils.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.rmi.server.ExportException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author liu_wp
@@ -30,6 +36,55 @@ public class IRISExcelFileFactory {
 
     }
 
+    public static ExcelReadResponse readOneSheetExcelV2007(ExcelReadParam param) {
+        ExcelReadResponse excelReadResponse = new ExcelReadResponse();
+        InputStream inputStream = null;
+        try {
+            validateReadExcel(param);
+            inputStream = FileUtil.synGetResourcesFileInputStream(param.getExcelPath());
+            ExcelReadHandler excelReadHandler = new ExcelReadHandler(inputStream, ExcelTypeEnum.XLSX);
+            Class<T> tClass = param.getDataClass().get(0);
+            Object objectMap = excelReadHandler.readOneSheetExcelV2007(tClass);
+            excelReadResponse.setData(objectMap);
+            excelReadResponse.setCode(FileConstant.SUCCESS_CODE);
+        } catch (Exception e) {
+            excelReadResponse.setMessage(e.getMessage());
+        } finally {
+            FileUtil.close(inputStream, null);
+        }
+        return excelReadResponse;
+    }
+
+    public static ExcelReadResponse readExcelV2007(ExcelReadParam param) {
+        ExcelReadResponse excelReadResponse = new ExcelReadResponse();
+        InputStream inputStream = null;
+        try {
+            validateReadExcel(param);
+            inputStream = FileUtil.synGetResourcesFileInputStream(param.getExcelPath());
+            ExcelReadHandler excelReadHandler = new ExcelReadHandler(inputStream, ExcelTypeEnum.XLSX);
+            Map<Integer, Object> objectMap = excelReadHandler.readExcelV2007(param.getDataClass());
+            excelReadResponse.setData(objectMap);
+            excelReadResponse.setCode(FileConstant.SUCCESS_CODE);
+        } catch (Exception e) {
+            excelReadResponse.setMessage(e.getMessage());
+        } finally {
+            FileUtil.close(inputStream, null);
+        }
+        return excelReadResponse;
+    }
+
+    private static void validateReadExcel(ExcelReadParam excelReadParam) {
+        if (excelReadParam == null) {
+            throw new ExcelParseException("excel read arguments is null");
+        }
+        if (StringUtils.isBlank(excelReadParam.getExcelPath())) {
+            throw new ExcelParseException("excel file path is null");
+        }
+        List<Class> classes = excelReadParam.getDataClass();
+        if (CollectionUtils.isEmpty(classes)) {
+            throw new ExcelParseException("excel data class  is empty");
+        }
+    }
 
     /**
      * 导出-模板

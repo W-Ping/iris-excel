@@ -1,15 +1,26 @@
 package com.iris.excelfile.utils;
 
+import com.iris.excelfile.annotation.ExcelReadProperty;
+import com.iris.excelfile.annotation.ExcelReadSheet;
 import com.iris.excelfile.annotation.ExcelWriteProperty;
 import com.iris.excelfile.exception.ExcelParseException;
 import com.iris.excelfile.metadata.BaseColumnProperty;
 import com.iris.excelfile.metadata.BaseRowModel;
+import com.iris.excelfile.metadata.ExcelReadColumnProperty;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -52,6 +63,35 @@ public class FieldUtil {
         } catch (Exception e) {
             log.error("ExcelWriteProperty annotation cast to object fail! {}", e.getMessage());
             throw new ExcelParseException("ExcelWriteProperty annotation cast to object fail!");
+        }
+        return t;
+    }
+
+    public static ExcelReadColumnProperty annotationReadToObject(Field field, Class<T> tClass) {
+        ExcelReadColumnProperty t = new ExcelReadColumnProperty();
+        try {
+            ExcelReadProperty annotation = field.getAnnotation(ExcelReadProperty.class);
+            if (null != annotation && null != tClass) {
+                ExcelReadSheet excelReadSheet = tClass.getAnnotation(ExcelReadSheet.class);
+                int sheetNo = excelReadSheet.SheetNo();
+                int startRowIndex = excelReadSheet.startRowIndex();
+                int startCellIndex = excelReadSheet.startCellIndex();
+                int cellIndex = annotation.cellIndex();
+                String dateFormat = annotation.dateFormat();
+                String numberFormat = annotation.numberFormat();
+                t.setCellIndex(cellIndex);
+                t.setDateFormat(dateFormat);
+                t.setNumberFormat(numberFormat);
+                t.setSheetNo(sheetNo);
+                t.setStartRowIndex(startRowIndex);
+                t.setStartCellIndex(startCellIndex);
+                t.setDataClass(tClass);
+                t.setField(field);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("ExcelReadColumnProperty annotation cast to object fail! {}", e.getMessage());
+            throw new ExcelParseException("ExcelReadColumnProperty annotation cast to object fail!");
         }
         return t;
     }
@@ -114,7 +154,7 @@ public class FieldUtil {
         return fieldAllMap;
     }
 
-    public static <T> void setValueToField(T instance, Field field, Object value) throws Exception {
+    public static <T> void setValueToField(T instance, Field field, Object value, String format) throws Exception {
         if (value == null || instance == null || field == null) {
             return;
         }
@@ -137,9 +177,28 @@ public class FieldUtil {
         } else if (type.equals(BigDecimal.class)) {
             field.set(instance, new BigDecimal(value.toString()));
         } else if (type.equals(Date.class)) {
-            SimpleDateFormat sf = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
-            Date date = sf.parse(value.toString());
-            field.set(instance, date);
+            Date dateValue = (Date) value;
+            Instant instant = dateValue.toInstant();
+            ZoneId zoneId = ZoneId.systemDefault();
+            LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+            format = StringUtils.isNotBlank(format) ? format : "yyyy-MM-dd HH:mm:ss";
+            String date = localDateTime.format(DateTimeFormatter.ofPattern(format));
+            dateValue = new Date(date);
+//            dateValue = Date.from(zonedDateTime.toInstant());
+//            if (dateValue.contains("-") || dateValue.contains("/") || dateValue.contains(":")) {
+//                date = TypeUtil.getSimpleDateFormatDate(dateValue, format);
+//            } else {
+//                Double d = Double.parseDouble(dateValue);
+//                dateValue = HSSFDateUtil.getJavaDate(d, true);
+//            }
+            int year = dateValue.getYear();
+            int hours = dateValue.getHours();
+            System.out.println(year + ":" + hours);
+            if (dateValue != null) {
+                field.set(instance, dateValue);
+            } else {
+                log.warn("[{}] date cost to Date is fail ", dateValue);
+            }
         }
 
     }

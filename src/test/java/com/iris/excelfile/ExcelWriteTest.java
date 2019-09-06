@@ -279,7 +279,7 @@ public class ExcelWriteTest {
         List<Map<String, Object>> list = new ArrayList<>();
         list.add(map);
         list.add(map2);
-        List<CrossReportGroupModel2> result = JSONUtil.convertMapToList(list, CrossReportGroupModel2.class);
+        List<CrossReportGroupModel2> result = JSONUtil.convertMapToList(list, CrossReportGroupModel2.class, null);
         for (CrossReportGroupModel2 d : result) {
             System.out.println(d.getEmpCode());
             System.out.println(d.getFinancialCountActualValue());

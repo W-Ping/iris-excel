@@ -24,11 +24,11 @@ public class JSONUtil {
      * @param <V>
      * @return
      */
-    public static <V, T> List<T> convertMapToList(List<Map<String, V>> list, Class<T> cls) {
+    public static <V, T> List<T> convertMapToList(List<Map<String, V>> list, Class<T> cls, String format) {
         List<T> resultList = new ArrayList<>();
         if (list != null && list.size() > 0 && cls != null) {
             for (Map<String, V> source : list) {
-                T t = convertMapToObject(source, cls);
+                T t = convertMapToObject(source, cls, format);
                 if (t != null) {
                     resultList.add(t);
                 }
@@ -37,7 +37,7 @@ public class JSONUtil {
         return resultList;
     }
 
-    public static <V, T> T convertMapToObject(Map<String, V> source, Class<T> cls) {
+    public static <V, T> T convertMapToObject(Map<String, V> source, Class<T> cls, String format) {
         if (source == null || cls == null) {
             return null;
         }
@@ -48,7 +48,7 @@ public class JSONUtil {
                 String key = toCamelCase(map.getKey(), true);
                 V value = map.getValue();
                 Field field = objectAllFieldMap.get(key);
-                FieldUtil.setValueToField(instance, field, value);
+                FieldUtil.setValueToField(instance, field, value, format);
             }
             return instance;
         } catch (Exception e) {

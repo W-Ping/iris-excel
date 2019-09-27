@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author liu_wp
@@ -133,7 +134,7 @@ public class WriteContext {
      */
     private void initTableHeadStyle(ExcelTable table) {
         ExcelHeadProperty excelHeadProperty = table.getExcelHeadProperty();
-        ExcelStyle headStyle = excelHeadProperty.getHeadStyle();
+        ExcelStyle headStyle = Optional.ofNullable(excelHeadProperty.getHeadStyle()).orElse(null);
         CellStyle cellStyle = null;
         if (headStyle != null) {
             cellStyle = StyleUtil.buildCellStyle(this.workbook, table.getTableNo(), headStyle.getExcelFont(),
